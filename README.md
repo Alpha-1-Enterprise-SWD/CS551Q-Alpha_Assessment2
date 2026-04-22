@@ -19,7 +19,7 @@ GP Radar is a comprehensive Django web application designed to provide actionabl
 ## 🏗️ Technical Architecture
 
 - **Backend**: Django 4.2+ with Python 3.8+
-- **Frontend**: HTML5, CSS3, JavaScript with Bootstrap
+- **Frontend**: HTML5, CSS3, JavaScript
 - **Database**: PostgreSQL (development: SQLite)
 - **Data Processing**: Pandas for data analysis and manipulation
 - **Visualization**: Chart.js for interactive charts

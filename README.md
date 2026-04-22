@@ -3,10 +3,10 @@
 This Django application (GP Radar) is a provide insights on GP practice capacity and their patient demographics.
 
 ## Proposal 1
-Team leaders - Raoul & Faizan
+Team leaders - Raoul & Faizan Khan
 Data lead - Raoul
 Frontend lead - Thomas
-Backend lead - Chia Chen & Enoch
+Backend lead - Chia Chen & Enoch & Faizan Khan
 Quality lead - Faizan Khan
 
 ## Data source

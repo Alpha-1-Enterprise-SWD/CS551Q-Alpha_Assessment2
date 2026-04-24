@@ -42,9 +42,9 @@ This application utilizes official healthcare data from Public Health Scotland:
 
 | Dataset | Description | Location |
 |---------|-------------|----------|
-| **GP Practices and List Sizes** | Practice contact details and patient list sizes (January 2026) | `/data/gp-practices-list-sizes.json` |
-| **GP Details** | General practitioner contact information (January 2026) | `/data/gp-details.json` |
-| **GP Practice Populations** | Demographic breakdown by practice (January 2026) | `/data/gp-practice-populations.json` |
+| **GP Practices and List Sizes** | Practice contact details and patient list sizes (January 2026) | `/data/gp-practices-list-sizes.csv` |
+| **GP Details** | General practitioner contact information (January 2026) | `/data/gp-details.csv` |
+| **GP Practice Populations** | Demographic breakdown by practice (January 2026) | `/data/gp-practice-populations.csv` |
 
 ### Data Source Links
 
@@ -89,7 +89,7 @@ This application utilizes official healthcare data from Public Health Scotland:
 
 5. **Load initial data**
    ```bash
-   python manage.py loaddata data/initial_data.json
+   python manage.py import_data --data-path data --clear
    ```
 
 6. **Run the development server**

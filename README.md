@@ -106,7 +106,7 @@ This application utilizes official healthcare data from Public Health Scotland:
 GP-Radar/
 ├── gp_radar/              # Main Django application
 │   ├── settings/          # Application settings
-│   ├── urls.py           # URL routing
+│   ├── urls.py           # URLs routing
 │   └── views.py          # View logic
 ├── data/                 # Raw and processed datasets
 ├── static/               # CSS, JavaScript, images

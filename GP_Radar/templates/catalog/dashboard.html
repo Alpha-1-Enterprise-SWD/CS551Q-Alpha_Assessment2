@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Postcode Search - GP Radar{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h2 mb-0">
+                    <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                    GP Practice Dashboard
+                </h1>
+                <p class="text-muted mb-0">Analyze healthcare data and patient demographics across Scotland</p>
+            </div>
+            <div>
+                <button class="btn btn-outline-primary" onclick="exportData()">
+                    <i class="fas fa-download me-1"></i>Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_practices }}</h4>
+                        <p class="card-text">Total Practices</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-hospital fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_gps }}</h4>
+                        <p class="card-text">Total GPs</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-user-md fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_patients }}</h4>
+                        <p class="card-text">Total Patients</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ avg_ratio }}</h4>
+                        <p class="card-text">Avg Patient/GP Ratio</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Postcode Search Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-search me-2"></i>Search by Postcode
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" id="postcodeSearchForm">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label for="postcode_search" class="form-label">Enter Postcode</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" class="form-control" id="postcode_search" name="postcode_search" 
+                               value="{{ current_filters.postcode_search }}" 
+                               placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."
+                               autofocus>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Search
+                        </button>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Enter a full postcode (e.g., "DD2 5NH") or partial postcode (e.g., "DD2") to find all practices in that area.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearPostcodeSearch()">
+                            <i class="fas fa-times me-1"></i>Clear Search
+                        </button>
+                        <small class="text-muted">
+                            Showing {{ practices_data|length }} practice{{ practices_data|length|pluralize }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+ 
+<!-- Results Section -->
+<div class="row">
+    <!-- Practices Table - Full Width -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table me-2"></i>GP Practices ({{ practices_data|length }}{% if page_obj and page_obj.has_other_pages %} of {{ page_obj.paginator.count }}{% endif %})
+                        </h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end align-items-center gap-2">
+                            <!-- Page Size Selector -->
+                            <div class="d-flex align-items-center">
+                                <label for="pageSize" class="form-label me-2 mb-0 small">Show:</label>
+                                <select id="pageSize" class="form-select form-select-sm" style="width: auto;" onchange="changePageSize()">
+                                    <option value="5" {% if request.GET.page_size == '5' %}selected{% endif %}>5</option>
+                                    <option value="10" {% if request.GET.page_size == '10' or not request.GET.page_size %}selected{% endif %}>10</option>
+                                    <option value="20" {% if request.GET.page_size == '20' %}selected{% endif %}>20</option>
+                                    <option value="30" {% if request.GET.page_size == '30' %}selected{% endif %}>30</option>
+                                    <option value="50" {% if request.GET.page_size == '50' %}selected{% endif %}>50</option>
+                                    <option value="100" {% if request.GET.page_size == '100' %}selected{% endif %}>100</option>
+                                </select>
+                            </div>
+                            <!-- View Toggle -->
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary" onclick="toggleView('table')">
+                                    <i class="fas fa-table"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="toggleView('cards')">
+                                    <i class="fas fa-th-large"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Table View -->
+                <div id="tableView">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Practice Name & Location</th>
+                                    <th>Contact & Code</th>
+                                    <th>Health Board</th>
+                                    <th>Patient List Size</th>
+                                    <th>GP Details & Names</th>
+                                    <th>Patient/GP Ratio</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in practices_data %}
+                                <tr>
+                                    <td>
+                                        <div class="practice-info">
+                                            <strong class="text-primary">{{ item.practice.name }}</strong><br>
+                                            <small class="text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i>{{ item.practice.address }}<br>
+                                                <i class="fas fa-envelope me-1"></i>{{ item.practice.postcode }}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="contact-info">
+                                            <small>
+                                                <i class="fas fa-phone me-1"></i>{{ item.practice.telephone }}<br>
+                                                <i class="fas fa-hashtag me-1"></i>{{ item.practice.practice_code }}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-wrap">{{ item.practice.health_board }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="size-info">
+                                            <strong class="text-primary">{{ item.practice.list_size|default:0|default_if_none:"0" }}</strong><br>
+                                            <small class="text-muted">Total Patients</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="gp-info">
+                                            <strong class="text-success">{{ item.gp_count }}</strong><br>
+                                            <small class="text-muted">Total GPs</small>
+                                            {% if item.gp_count > 0 %}
+                                                <div class="mt-2">
+                                                    {% if item.practice.practice_code %}
+                                                        <a href="{% url 'practice_detail' item.practice.practice_code %}" 
+                                                           class="btn btn-sm btn-primary text-white">
+                                                            <i class="fas fa-user-md me-1"></i>GP Details
+                                                        </a>
+                                                    {% else %}
+                                                        <button class="btn btn-sm btn-secondary" disabled title="No practice code available">
+                                                            <i class="fas fa-user-md me-1"></i>GP Details
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                <div class="mt-2">
+                                                    <small class="text-muted">No GP data available</small>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="metrics-info">
+                                            <div class="ratio-display mb-2">
+                                                <strong class="{% if item.patient_to_gp_ratio > 2000 %}text-danger{% elif item.patient_to_gp_ratio > 1500 %}text-warning{% else %}text-success{% endif %}">
+                                                    {{ item.patient_to_gp_ratio|default:"N/A" }}
+                                                </strong><br>
+                                                <small class="text-muted">Patient/GP Ratio</small>
+                                            </div>
+                                            <div class="population-info">
+                                                <strong class="text-info">{{ item.total_population|default:0 }}</strong><br>
+                                                <small class="text-muted">Total Population</small>
+                                            </div>
+                                            <div class="gender-breakdown mt-1">
+                                                <small>
+                                                    <i class="fas fa-mars text-primary me-1"></i>{{ item.male_population|default:0 }} M<br>
+                                                    <i class="fas fa-venus text-danger me-1"></i>{{ item.female_population|default:0 }} F
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <div class="btn-group-vertical btn-group-sm">
+                                                {% if item.practice.practice_code %}
+                                                <a href="{% url 'practice_detail' item.practice.practice_code %}" 
+                                                   class="btn btn-primary btn-sm mb-1" title="View Full Details">
+                                                    <i class="fas fa-eye me-1"></i>Details
+                                                </a>
+                                                {% else %}
+                                                <button class="btn btn-secondary btn-sm mb-1" disabled title="No practice code available">
+                                                    <i class="fas fa-eye me-1"></i>Details
+                                                </button>
+                                                {% endif %}
+                                                <button class="btn btn-info btn-sm mb-1" 
+                                                        onclick="showOnMap({{ item.practice.latitude|default:'null' }}, {{ item.practice.longitude|default:'null' }})"
+                                                        title="Show on Map">
+                                                    <i class="fas fa-map-marker-alt me-1"></i>Map
+                                                </button>
+                                                {% if item.practice.practice_code %}
+                                                <button class="btn btn-success btn-sm" 
+                                                        onclick="exportPractice('{{ item.practice.practice_code }}')"
+                                                        title="Export Practice Data">
+                                                    <i class="fas fa-download me-1"></i>Export
+                                                </button>
+                                                {% else %}
+                                                <button class="btn btn-secondary btn-sm" disabled title="No practice code available">
+                                                    <i class="fas fa-download me-1"></i>Export
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <div class="no-results">
+                                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                            <h5>No practices found</h5>
+                                            <p class="text-muted">Try adjusting your search criteria or filters</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Card View -->
+                <div id="cardView" style="display: none;">
+                    <div class="row">
+                        {% for item in practices_data %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ item.practice.name }}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">{{ item.practice.address }}</small><br>
+                                        <span class="badge bg-secondary">{{ item.practice.health_board }}</span>
+                                    </p>
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <strong>{{ item.practice.list_size|default:0 }}</strong><br>
+                                            <small class="text-muted">Patients</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <strong>{{ item.gp_count }}</strong><br>
+                                            <small class="text-muted">GPs</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <strong>{{ item.patient_to_gp_ratio }}</strong><br>
+                                            <small class="text-muted">Ratio</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    {% if item.practice.practice_code %}
+                                    <a href="{% url 'practice_detail' item.practice.practice_code %}" 
+                                       class="btn btn-sm btn-primary w-100">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-secondary w-100" disabled>
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj and page_obj.has_other_pages %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Practice pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}">
+                                    <i class="fas fa-angle-double-left"></i> First
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}">
+                                    <i class="fas fa-angle-left"></i> Previous
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}">
+                                    Next <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}">
+                                    Last <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                
+                <!-- Results info -->
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} practices
+                        {% if current_filters.postcode_search %}
+                            (filtered by postcode: "{{ current_filters.postcode_search }}")
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <!-- Health Board Distribution -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Health Board Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="healthBoardChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!-- Practice Locations Map -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-map me-2"></i>Practice Locations
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="map" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    loadHealthBoardChart();
+    initializeMap();
+});
+</script>
+{% endblock %}

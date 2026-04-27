@@ -116,17 +116,6 @@ GP-Radar/
 └── README.md            # This file
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-DEBUG=True
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///db.sqlite3
-```
 
 ## 📈 Usage
 

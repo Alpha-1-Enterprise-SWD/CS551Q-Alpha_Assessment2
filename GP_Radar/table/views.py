@@ -32,7 +32,7 @@ def get_Practices(request):
     keyword = request.GET.get("keyword", None)
     address = request.GET.get("address", None)
     postcode = request.GET.get("postcode", None)
-    pagesize = request.GET.get("page-size", None)
+    pagesize = int(request.GET.get("page-size", 5))
 
     # Query all practices
     practices = GPPractices.objects.all()
@@ -45,7 +45,8 @@ def get_Practices(request):
         practices = practices.filter(address__icontains=address)
     if postcode != None:
         practices = practices.filter(postcode__icontains=address)
-    total_page_num = math.ceil(len(practices) / pagesize)
+    total_page_num = math.ceil(total_practice_num / pagesize)
+    print("total_page_num: " + str(total_practice_num) + str(total_page_num))
     if total_page_num < page:
         return redirect(
             f"/tables/practices?page={1}&keyword={keyword}&address={address}&postcode={postcode}&page-size={pagesize}"
@@ -62,7 +63,7 @@ def get_Practices(request):
     doctors = GPDetails.objects.all()
     total_doctor_num = len(doctors)
     populations = GPPopulations.objects.all()
-    dict = {
+    context = {
         "practices": [],
         "total_practice_num": total_practice_num,
         "total_doc_num": total_doctor_num,
@@ -124,7 +125,6 @@ def get_Practices(request):
         )
         Practice.male_patient_num = male_population
         Practice.female_patient_num = female_population
-        dict["female_patient_num_by_prac"].append(female_population)
         total = p.list_size
         total_patient_num += total
 
@@ -136,11 +136,11 @@ def get_Practices(request):
             Practice.patient_gp_ratio = ratio
             avg_pat_doc_ratio += ratio
 
-        dict["practices"].append(Practice)
+        context["practices"].append(Practice)
 
-    dict["total_patient_num"] = total_patient_num
-    dict["avg_pat_doc_ratio"] = avg_pat_doc_ratio / dict["total_practice_num"]
-    dict["filter_params"] = TableFilterParam(
+    context["total_patient_num"] = total_patient_num
+    context["avg_pat_doc_ratio"] = avg_pat_doc_ratio / context["total_practice_num"]
+    context["filter_params"] = TableFilterParam(
         page=page,
         address=address,
         postcode=postcode,
@@ -148,4 +148,4 @@ def get_Practices(request):
         pagesize=pagesize,
     )
 
-    return render(request, "table/dashboard.html", dict)
+    return render(request, "table/dashboard.html", context)

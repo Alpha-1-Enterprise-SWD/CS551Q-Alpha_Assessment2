@@ -29,7 +29,7 @@ GP Radar{% endblock %} {% block content %}
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <h4 class="card-title">{{ total_practices }}</h4>
+            <h4 class="card-title">{{ total_practice_num }}</h4>
             <p class="card-text">Total Practices</p>
           </div>
           <div class="align-self-center">
@@ -44,7 +44,7 @@ GP Radar{% endblock %} {% block content %}
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <h4 class="card-title">{{ total_gps }}</h4>
+            <h4 class="card-title">{{ total_doctor_num }}</h4>
             <p class="card-text">Total GPs</p>
           </div>
           <div class="align-self-center">
@@ -59,7 +59,7 @@ GP Radar{% endblock %} {% block content %}
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <h4 class="card-title">{{ total_patients }}</h4>
+            <h4 class="card-title">{{ total_patient_num }}</h4>
             <p class="card-text">Total Patients</p>
           </div>
           <div class="align-self-center">
@@ -74,7 +74,7 @@ GP Radar{% endblock %} {% block content %}
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <h4 class="card-title">{{ avg_ratio }}</h4>
+            <h4 class="card-title">{{ avg_pat_doc_ratio }}</h4>
             <p class="card-text">Avg Patient/GP Ratio</p>
           </div>
           <div class="align-self-center">
@@ -105,7 +105,7 @@ GP Radar{% endblock %} {% block content %}
               class="form-control"
               id="postcode_search"
               name="postcode_search"
-              value="{{ current_filters.postcode_search }}"
+              value="{{ filter_params.postcode }}"
               placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."
               autofocus
             />
@@ -130,8 +130,8 @@ GP Radar{% endblock %} {% block content %}
               <i class="fas fa-times me-1"></i>Clear Search
             </button>
             <small class="text-muted">
-              Showing {{ practices_data|length }} practice{{
-              practices_data|length|pluralize }}
+              Showing {{ practices|length }} practice{{
+              practices|length|pluralize }}
             </small>
           </div>
         </div>
@@ -149,10 +149,9 @@ GP Radar{% endblock %} {% block content %}
         <div class="row align-items-center">
           <div class="col-md-6">
             <h5 class="mb-0">
-              <i class="fas fa-table me-2"></i>GP Practices ({{
-              practices_data|length }}{% if page_obj and
-              page_obj.has_other_pages %} of {{ page_obj.paginator.count }}{%
-              endif %})
+              <i class="fas fa-table me-2"></i>GP Practices ( {{
+              practices|length }} {% if total_page_num > 1 %}
+              {{filter_params.page}} of {{ total_page_num }} {% endif %})
             </h5>
           </div>
           <div class="col-md-6">
@@ -172,7 +171,7 @@ GP Radar{% endblock %} {% block content %}
                     value="5"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="5"
                     %}selected{%
                     endif
@@ -184,11 +183,11 @@ GP Radar{% endblock %} {% block content %}
                     value="10"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="10"
                     or
                     not
-                    request.GET.page_size
+                    request.GET.page-size
                     %}selected{%
                     endif
                     %}
@@ -199,7 +198,7 @@ GP Radar{% endblock %} {% block content %}
                     value="20"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="20"
                     %}selected{%
                     endif
@@ -211,7 +210,7 @@ GP Radar{% endblock %} {% block content %}
                     value="30"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="30"
                     %}selected{%
                     endif
@@ -223,7 +222,7 @@ GP Radar{% endblock %} {% block content %}
                     value="50"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="50"
                     %}selected{%
                     endif
@@ -235,7 +234,7 @@ GP Radar{% endblock %} {% block content %}
                     value="100"
                     {%
                     if
-                    request.GET.page_size=""
+                    request.GET.page-size=""
                     ="100"
                     %}selected{%
                     endif
@@ -283,7 +282,7 @@ GP Radar{% endblock %} {% block content %}
                 </tr>
               </thead>
               <tbody>
-                {% for item in practices_data %}
+                {% for item in practices %}
                 <tr>
                   <td>
                     <div class="practice-info">
@@ -325,10 +324,10 @@ GP Radar{% endblock %} {% block content %}
                   </td>
                   <td>
                     <div class="gp-info">
-                      <strong class="text-success">{{ item.gp_count }}</strong
+                      <strong class="text-success">{{ item.doctor_num }}</strong
                       ><br />
                       <small class="text-muted">Total GPs</small>
-                      {% if item.gp_count > 0 %}
+                      {% if item.doctor_num > 0 %}
                       <div class="mt-2">
                         {% if item.practice.practice_code %}
                         <a
@@ -358,24 +357,24 @@ GP Radar{% endblock %} {% block content %}
                     <div class="metrics-info">
                       <div class="ratio-display mb-2">
                         <strong
-                          class="{% if item.patient_to_gp_ratio > 2000 %}text-danger{% elif item.patient_to_gp_ratio > 1500 %}text-warning{% else %}text-success{% endif %}"
+                          class="{% if item.patient_gp_ratio > 2000 %}text-danger{% elif item.patient_gp_ratio > 1500 %}text-warning{% else %}text-success{% endif %}"
                         >
-                          {{ item.patient_to_gp_ratio|default:"N/A" }} </strong
+                          {{ item.patient_gp_ratio|default:"N/A" }} </strong
                         ><br />
                         <small class="text-muted">Patient/GP Ratio</small>
                       </div>
                       <div class="population-info">
                         <strong class="text-info"
-                          >{{ item.total_population|default:0 }}</strong
+                          >{{ item.list_size|default:0 }}</strong
                         ><br />
                         <small class="text-muted">Total Population</small>
                       </div>
                       <div class="gender-breakdown mt-1">
                         <small>
                           <i class="fas fa-mars text-primary me-1"></i>{{
-                          item.male_population|default:0 }} M<br />
+                          item.male_patient_num|default:0 }} M<br />
                           <i class="fas fa-venus text-danger me-1"></i>{{
-                          item.female_population|default:0 }} F
+                          item.female_patient_num|default:0 }} F
                         </small>
                       </div>
                     </div>
@@ -468,11 +467,11 @@ GP Radar{% endblock %} {% block content %}
                       <small class="text-muted">Patients</small>
                     </div>
                     <div class="col-4">
-                      <strong>{{ item.gp_count }}</strong><br />
+                      <strong>{{ item.doctor_num }}</strong><br />
                       <small class="text-muted">GPs</small>
                     </div>
                     <div class="col-4">
-                      <strong>{{ item.patient_to_gp_ratio }}</strong><br />
+                      <strong>{{ item.patient_gp_ratio }}</strong><br />
                       <small class="text-muted">Ratio</small>
                     </div>
                   </div>
@@ -500,56 +499,41 @@ GP Radar{% endblock %} {% block content %}
     </div>
 
     <!-- Pagination -->
-    {% if page_obj and page_obj.has_other_pages %}
+    {% if total_page_num > 1 %}
     <div class="row mt-4">
       <div class="col-12">
         <nav aria-label="Practice pagination">
           <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
+            {% if filter_params.page > 1 %}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page=1&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}"
-              >
+              <a class="page-link" href="">
                 <i class="fas fa-angle-double-left"></i> First
               </a>
             </li>
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ page_obj.previous_page_number }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}"
-              >
+              <a class="page-link" href="">
                 <i class="fas fa-angle-left"></i> Previous
               </a>
             </li>
-            {% endif %} {% for num in page_obj.paginator.page_range %} {% if
-            page_obj.number == num %}
+            {% endif %} {% for num in page_range %} {% if filter_params.page ==
+            num %}
             <li class="page-item active">
               <span class="page-link">{{ num }}</span>
             </li>
-            {% elif num > page_obj.number|add:'-3' and num <
-            page_obj.number|add:'3' %}
+            {% elif num > filter_params.page|add:'-3' and num <
+            filter_params.page|add:'3' %}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ num }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}"
-                >{{ num }}</a
-              >
+              <a class="page-link" href="">{{ num }}</a>
             </li>
-            {% endif %} {% endfor %} {% if page_obj.has_next %}
+            {% endif %} {% endfor %} {% if filter_params.page < total_page_num
+            %}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ page_obj.next_page_number }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}"
-              >
+              <a class="page-link" href="">
                 Next <i class="fas fa-angle-right"></i>
               </a>
             </li>
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ page_obj.paginator.num_pages }}&page_size={{ page_obj.paginator.per_page }}{% if current_filters.postcode_search %}&postcode_search={{ current_filters.postcode_search }}{% endif %}"
-              >
+              <a class="page-link" href="">
                 Last <i class="fas fa-angle-double-right"></i>
               </a>
             </li>

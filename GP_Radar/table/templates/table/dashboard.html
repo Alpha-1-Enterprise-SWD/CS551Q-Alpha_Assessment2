@@ -545,9 +545,8 @@ GP Radar{% endblock %} {% block content %}
         <div class="text-center mt-3">
           <small class="text-muted">
             Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{
-            page_obj.paginator.count }} practices {% if
-            current_filters.postcode_search %} (filtered by postcode: "{{
-            current_filters.postcode_search }}") {% endif %}
+            total_practice_num }} practices {% if filter_params.postcode %}
+            (filtered by postcode: "{{ filter_params.postcode }}") {% endif %}
           </small>
         </div>
       </div>

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "catalog",
     "table",
+    "django.contrib.humanize",
 ]
 
 MIDDLEWARE = [

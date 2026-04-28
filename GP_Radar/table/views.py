@@ -3,56 +3,83 @@ from catalog.models import GPDetails, GPPractices, GPPopulations
 import math
 from django.shortcuts import redirect
 
-RECORDS_PER_PAGE = 50
 
 # Create your views here.
 
 
-def get_Practices(request):
-    page = int(request.GET.get("page", 1))
-    name = request.GET.get("name", None)
-    location = request.GET.get("location", None)
-    # print("page: " + str(page))
-    # print("name: " + str(name))
-    # print("location:" + str(location))
+class TableFilterParam:
+    def __init__(self, page, address, postcode, keyword, pagesize):
+        self.page = page
+        self.postcode = postcode
+        self.address = address
+        self.keyword = keyword
+        self.pagesize = pagesize
 
+
+class PracticeData:
+    def __init__(self, practice):
+        self.practice = practice
+        self.doctors = []
+        self.doctor_num = 0
+        self.patient_gp_ratio = 0
+        self.female_patient_num = 0
+        self.male_patient_num = 0
+
+
+def get_Practices(request):
+    # Get parameters in URL
+    page = int(request.GET.get("page", 1))
+    keyword = request.GET.get("keyword", None)
+    address = request.GET.get("address", None)
+    postcode = request.GET.get("postcode", None)
+    pagesize = request.GET.get("page-size", None)
+
+    # Query all practices
     practices = GPPractices.objects.all()
 
-    if name != None:
-        practices = practices.filter(name__icontains=name)
-    if location != None:
-        practices = practices.filter(address__icontains=location)
-    if math.ceil(len(practices) / 50) < page:
-        return redirect(f"/tables/practices?page={1}&name={name}&location={location}")
+    # filter practice list according to parameters
+    if keyword != None:
+        practices = practices.filter(name__icontains=keyword)
+    if address != None:
+        practices = practices.filter(address__icontains=address)
+    if postcode != None:
+        practices = practices.filter(postcode__icontains=address)
+    total_page_num = math.ceil(len(practices) / pagesize)
+    if total_page_num < page:
+        return redirect(
+            f"/tables/practices?page={1}&keyword={keyword}&address={address}&postcode={postcode}&page-size={pagesize}"
+        )
     else:
-        begin = (page - 1) * RECORDS_PER_PAGE
+        begin = (page - 1) * pagesize
         end = None
-        if len(practices[begin:]) < 50:
+        if len(practices[begin:]) < pagesize:
             practices = practices[begin:]
         else:
-            end = begin + RECORDS_PER_PAGE - 1
+            end = begin + pagesize - 1
             practices = practices[begin:end]
-        print("begin:" + str(begin) + " end: " + str(end))
 
     doctors = GPDetails.objects.all()
+    total_doctor_num = len(doctors)
     populations = GPPopulations.objects.all()
     dict = {
         "practices": [],
-        "doctors": [],
-        "doc_num": [],
-        "patient_gp_ratio": [],
-        "total_patient": [],
-        "male_population": [],
-        "female_population": [],
+        "total_doc_num": total_doctor_num,
+        "total_patient_num": None,
+        "avg_pat_doc_ratio": None,
+        "filter_params": None,
+        "total_page_num": total_page_num,
+        "page_range": range(1, (total_page_num + 1)),
     }
-    for i in range(len(practices)):
-        dict["practices"].append(practices[i])
-        doctors_list = doctors.filter(practice=practices[i].practice_code)
-        dict["doctors"].append(doctors_list)
-        doctor_number = len(doctors_list)
-        dict["doc_num"].append(doctor_number)
-        female = populations.get(practice=practices[i].practice_code, sex="Female")
-        male = populations.get(practice=practices[i].practice_code, sex="Male")
+    total_patient_num = 0
+    avg_pat_doc_ratio = 0
+    for p in practices:
+        Practice = PracticeData(p)
+        doctors_list = doctors.filter(practice=p.practice_code)
+        Practice.doctors = doctors_list
+        Practice.doctor_num = len(doctors_list)
+
+        female = populations.get(practice=p.practice_code, sex="Female")
+        male = populations.get(practice=p.practice_code, sex="Male")
         female_population = (
             female.ages00to04
             + female.ages05to09
@@ -93,23 +120,30 @@ def get_Practices(request):
             + male.ages80to84
             + male.ages85plus
         )
+        Practice.male_patient_num = male_population
+        Practice.female_patient_num = female_population
+        dict["female_patient_num_by_prac"].append(female_population)
+        total = p.list_size
+        total_patient_num += total
 
-        dict["male_population"].append(male_population)
-        dict["female_population"].append(female_population)
-        total = practices[i].list_size
-        dict["total_patient"].append(total)
-        if doctor_number == 0:
-            dict["patient_gp_ratio"].append("no doctors found.")
+        if Practice.doctor_num == 0:
+            Practice.patient_gp_ratio = "no doctors found."
+            avg_pat_doc_ratio += 0
         else:
-            dict["patient_gp_ratio"].append(total / doctor_number)
+            ratio = total / Practice.doctor_num
+            Practice.patient_gp_ratio = ratio
+            avg_pat_doc_ratio += ratio
 
-    # print(dict["practices"][0])
-    # print(dict["practices"][0].practice_code)
-    # print(dict["doctors"][0])
-    # print(dict["doc_num"][0])
-    # print(dict["patient_gp_ratio"][0])
-    # print(dict["total_patient"][0])
-    # print(dict["male_population"][0])
-    # print(dict["female_population"][0])
+        dict["practices"].append(Practice)
 
-    return render(request, "index.html", dict)
+    dict["total_patient_num"] = total_patient_num
+    dict["avg_pat_doc_ratio"] = avg_pat_doc_ratio / dict["total_practice_num"]
+    dict["filter_params"] = TableFilterParam(
+        page=page,
+        address=address,
+        postcode=postcode,
+        keyword=keyword,
+        pagesize=pagesize,
+    )
+
+    return render(request, "table/dashboard.html", dict)

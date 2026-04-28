@@ -1,5 +1,6 @@
 {% extends 'table/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}
   Postcode Search -
   GP Radar
@@ -31,7 +32,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <h4 class="card-title">{{ total_practice_num }}</h4>
+              <h4 class="card-title">{{ total_practice_num|intcomma }}</h4>
               <p class="card-text">Total Practices</p>
             </div>
             <div class="align-self-center">
@@ -46,7 +47,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <h4 class="card-title">{{ total_doc_num }}</h4>
+              <h4 class="card-title">{{ total_doc_num |intcomma }}</h4>
               <p class="card-text">Total GPs</p>
             </div>
             <div class="align-self-center">
@@ -61,7 +62,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <h4 class="card-title">{{ total_patient_num }}</h4>
+              <h4 class="card-title">{{ total_patient_num |intcomma }}</h4>
               <p class="card-text">Total Patients</p>
             </div>
             <div class="align-self-center">
@@ -76,7 +77,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <h4 class="card-title">{{ avg_pat_doc_ratio }}</h4>
+              <h4 class="card-title">{{ avg_pat_doc_ratio |intcomma }}</h4>
               <p class="card-text">Avg Patient/GP Ratio</p>
             </div>
             <div class="align-self-center">
@@ -105,8 +106,7 @@
                      class="form-control"
                      id="postcode_search"
                      name="postcode_search"
-                     value="{{ filter_params.postcode }}"
-                     placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."
+                     {% if filter_params.postcode == none %} value="" placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."{% else %} value="{{ filter_params.postcode }}"  {% endif %}
                      autofocus />
               <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search me-1"></i>Search
@@ -126,10 +126,7 @@
                       onclick="clearPostcodeSearch()">
                 <i class="fas fa-times me-1"></i>Clear Search
               </button>
-              <small class="text-muted">
-                Showing {{ practices|length }} practice{{
-                practices|length|pluralize }}
-              </small>
+              <small class="text-muted">Showing {{ practices|length }} practice{{ practices|length|pluralize }}</small>
             </div>
           </div>
         </div>
@@ -145,9 +142,8 @@
           <div class="row align-items-center">
             <div class="col-md-6">
               <h5 class="mb-0">
-                <i class="fas fa-table me-2"></i>GP Practices ( {{
-                practices|length }}
-                {% if total_page_num > 1 %}{{ filter_params.page }} of {{ total_page_num }}{% endif %}
+                <i class="fas fa-table me-2"></i>GP Practices ( {{ practices|length }}
+                {% if total_page_num > 1 %}of {{ total_practice_num }}{% endif %}
                 )
               </h5>
             </div>
@@ -209,22 +205,18 @@
                           <strong class="text-primary">{{ item.practice.name }}</strong>
                           <br />
                           <small class="text-muted">
-                            <i class="fas fa-map-marker-alt me-1"></i>{{
-                            item.practice.address }}
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ item.practice.address }}
                             <br />
-                            <i class="fas fa-envelope me-1"></i>{{
-                            item.practice.postcode }}
+                            <i class="fas fa-envelope me-1"></i>{{ item.practice.postcode }}
                           </small>
                         </div>
                       </td>
                       <td>
                         <div class="contact-info">
                           <small>
-                            <i class="fas fa-phone me-1"></i>{{
-                            item.practice.telephone }}
+                            <i class="fas fa-phone me-1"></i>{{ item.practice.telephone }}
                             <br />
-                            <i class="fas fa-hashtag me-1"></i>{{
-                            item.practice.practice_code }}
+                            <i class="fas fa-hashtag me-1"></i>{{ item.practice.practice_code }}
                           </small>
                         </div>
                       </td>
@@ -233,16 +225,14 @@
                       </td>
                       <td>
                         <div class="size-info">
-                          <strong class="text-primary">{{
-                            item.practice.list_size|default:0|default_if_none:"0"
-                          }}</strong>
+                          <strong class="text-primary">{{ item.practice.list_size|default:0|default_if_none:"0" |intcomma }}</strong>
                           <br />
                           <small class="text-muted">Total Patients</small>
                         </div>
                       </td>
                       <td>
                         <div class="gp-info">
-                          <strong class="text-success">{{ item.doctor_num }}</strong>
+                          <strong class="text-success">{{ item.doctor_num |intcomma }}</strong>
                           <br />
                           <small class="text-muted">Total GPs</small>
                           {% if item.doctor_num > 0 %}
@@ -270,22 +260,20 @@
                         <div class="metrics-info">
                           <div class="ratio-display mb-2">
                             <strong class="{% if item.patient_gp_ratio > 2000 %}text-danger{% elif item.patient_gp_ratio > 1500 %}text-warning{% else %}text-success{% endif %}">
-                            {{ item.patient_gp_ratio|default:"N/A" }} </strong>
+                            {{ item.patient_gp_ratio|default:"N/A" |intcomma }} </strong>
                             <br />
                             <small class="text-muted">Patient/GP Ratio</small>
                           </div>
                           <div class="population-info">
-                            <strong class="text-info">{{ item.list_size|default:0 }}</strong>
+                            <strong class="text-info">{{ item.practice.list_size|default:0 |intcomma }}</strong>
                             <br />
                             <small class="text-muted">Total Population</small>
                           </div>
                           <div class="gender-breakdown mt-1">
                             <small>
-                              <i class="fas fa-mars text-primary me-1"></i>{{
-                              item.male_patient_num|default:0 }} M
+                              <i class="fas fa-mars text-primary me-1"></i>{{ item.male_patient_num|default:0 |intcomma }} M
                               <br />
-                              <i class="fas fa-venus text-danger me-1"></i>{{
-                              item.female_patient_num|default:0 }} F
+                              <i class="fas fa-venus text-danger me-1"></i>{{ item.female_patient_num|default:0 |intcomma }} F
                             </small>
                           </div>
                         </div>
@@ -344,13 +332,13 @@
           <!-- Card View -->
           <div id="cardView" style="display: none">
             <div class="row">
-              {% for item in practices_data %}
+              {% for item in practices %}
                 <div class="col-md-6 mb-3">
                   <div class="card h-100">
                     <div class="card-body">
                       <h6 class="card-title">{{ item.practice.name }}</h6>
                       <p class="card-text">
-                        <small class="text-muted">{{ item.practice.address }}</small>
+                        <small class="text-muted">{{ item.practice.name }}</small>
                         <br />
                         <span class="badge bg-secondary">{{ item.practice.health_board }}</span>
                       </p>
@@ -436,8 +424,7 @@
             <!-- Results info -->
             <div class="text-center mt-3">
               <small class="text-muted">
-                Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{
-                total_practice_num }} practices
+                Showing {{ begin_index }}-{{ end_index }} of {{ total_practice_num |intcomma }} practices
                 {% if filter_params.postcode %}(filtered by postcode: "{{ filter_params.postcode }}"){% endif %}
               </small>
             </div>
@@ -477,7 +464,7 @@
   </div>
 {% endblock %}
 {% block scripts %}
-  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'dashboard.js' %}"></script>
   <script>
   // Initialize dashboard when page loads
   document.addEventListener("DOMContentLoaded", function () {

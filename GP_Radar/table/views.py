@@ -26,17 +26,46 @@ class PracticeData:
         self.male_patient_num = 0
 
 
+def get_total_patient():
+    practices = GPPractices.objects.all()
+    total_patient_num = 0
+    for p in practices:
+        total_patient_num += p.list_size
+
+    return total_patient_num
+
+
+def get_total_practice():
+    total_practice_num = GPPractices.objects.all().count()
+    return total_practice_num
+
+
+def get_avg_pat_doc_ratio():
+    practices = GPPractices.objects.all()
+    doctors = GPDetails.objects.all()
+    avg_pat_doc_ratio = 0
+    valid_practice = practices.count()
+    for p in practices:
+        doctor_num_by_practice = doctors.filter(practice=p).count()
+        if doctor_num_by_practice != 0:
+            avg_pat_doc_ratio += p.list_size / doctor_num_by_practice
+        else:
+            valid_practice -= 1
+    avg_pat_doc_ratio = round(avg_pat_doc_ratio / valid_practice, 1)
+
+    return avg_pat_doc_ratio
+
+
 def get_Practices(request):
     # Get parameters in URL
     page = int(request.GET.get("page", 1))
-    keyword = request.GET.get("keyword", None)
-    address = request.GET.get("address", None)
-    postcode = request.GET.get("postcode", None)
+    keyword = request.GET.get("keyword", "")
+    address = request.GET.get("address", "")
+    postcode = request.GET.get("postcode", "")
     pagesize = int(request.GET.get("page-size", 5))
 
     # Query all practices
     practices = GPPractices.objects.all()
-    total_practice_num = len(practices)
 
     # filter practice list according to parameters
     if keyword != None:
@@ -44,9 +73,13 @@ def get_Practices(request):
     if address != None:
         practices = practices.filter(address__icontains=address)
     if postcode != None:
-        practices = practices.filter(postcode__icontains=address)
+        practices = practices.filter(postcode__icontains=postcode)
+    total_practice_num = len(practices)
     total_page_num = math.ceil(total_practice_num / pagesize)
-    print("total_page_num: " + str(total_practice_num) + str(total_page_num))
+
+    begin = 0
+    end = 0
+
     if total_page_num < page:
         return redirect(
             f"/tables/practices?page={1}&keyword={keyword}&address={address}&postcode={postcode}&page-size={pagesize}"
@@ -57,29 +90,31 @@ def get_Practices(request):
         if len(practices[begin:]) < pagesize:
             practices = practices[begin:]
         else:
-            end = begin + pagesize - 1
+            end = begin + pagesize
             practices = practices[begin:end]
 
     doctors = GPDetails.objects.all()
     total_doctor_num = len(doctors)
     populations = GPPopulations.objects.all()
+
     context = {
         "practices": [],
-        "total_practice_num": total_practice_num,
+        "total_practice_num": get_total_practice(),
         "total_doc_num": total_doctor_num,
-        "total_patient_num": None,
-        "avg_pat_doc_ratio": None,
+        "total_patient_num": get_total_patient(),
+        "avg_pat_doc_ratio": get_avg_pat_doc_ratio(),
         "filter_params": None,
         "total_page_num": total_page_num,
         "page_range": range(1, (total_page_num + 1)),
+        "begin_index": begin + 1,
+        "end_index": end,
     }
-    total_patient_num = 0
-    avg_pat_doc_ratio = 0
+
     for p in practices:
         Practice = PracticeData(p)
         doctors_list = doctors.filter(practice=p.practice_code)
         Practice.doctors = doctors_list
-        Practice.doctor_num = len(doctors_list)
+        Practice.doctor_num = doctors_list.count()
 
         female = populations.get(practice=p.practice_code, sex="Female")
         male = populations.get(practice=p.practice_code, sex="Male")
@@ -125,21 +160,11 @@ def get_Practices(request):
         )
         Practice.male_patient_num = male_population
         Practice.female_patient_num = female_population
+        Practice.patient_gp_ratio = round(p.list_size / Practice.doctor_num, 1)
         total = p.list_size
-        total_patient_num += total
-
-        if Practice.doctor_num == 0:
-            Practice.patient_gp_ratio = "no doctors found."
-            avg_pat_doc_ratio += 0
-        else:
-            ratio = total / Practice.doctor_num
-            Practice.patient_gp_ratio = ratio
-            avg_pat_doc_ratio += ratio
 
         context["practices"].append(Practice)
 
-    context["total_patient_num"] = total_patient_num
-    context["avg_pat_doc_ratio"] = avg_pat_doc_ratio / context["total_practice_num"]
     context["filter_params"] = TableFilterParam(
         page=page,
         address=address,

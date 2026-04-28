@@ -1,4 +1,0 @@
-SECRET_KEY=YourKey
-DEBUG=True(or False)
-
-### Rename this file as .env

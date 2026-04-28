@@ -36,6 +36,7 @@ def get_Practices(request):
 
     # Query all practices
     practices = GPPractices.objects.all()
+    total_practice_num = len(practices)
 
     # filter practice list according to parameters
     if keyword != None:
@@ -63,6 +64,7 @@ def get_Practices(request):
     populations = GPPopulations.objects.all()
     dict = {
         "practices": [],
+        "total_practice_num": total_practice_num,
         "total_doc_num": total_doctor_num,
         "total_patient_num": None,
         "avg_pat_doc_ratio": None,

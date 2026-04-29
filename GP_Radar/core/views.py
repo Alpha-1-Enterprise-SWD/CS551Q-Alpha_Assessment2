@@ -14,6 +14,5 @@ def table(request):
 
 
 def get_Practice(request, id):
-    practices = GPPractices.objects.get(practice_code=id)
-
-    return render()
+    print(id)
+    return render(request, "core/practice_detail.html")

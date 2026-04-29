@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "catalog",
     "core",
     "table",
+    "core",
     "django.contrib.humanize",
 ]
 

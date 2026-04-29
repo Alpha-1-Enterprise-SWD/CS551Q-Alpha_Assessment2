@@ -237,7 +237,8 @@
                           {% if item.doctor_num > 0 %}
                             <div class="mt-2">
                               {% if item.practice.practice_code %}
-                                <a href="" class="btn btn-sm btn-primary text-white">
+                                <a href="/practices/{{ item.practice.practice_code }}/"
+                                   class="btn btn-sm btn-primary text-white">
                                   <i class="fas fa-user-md me-1"></i>GP Details
                                 </a>
                               {% else %}

@@ -282,7 +282,9 @@
                         <div class="action-buttons">
                           <div class="btn-group-vertical btn-group-sm">
                             {% if item.practice.practice_code %}
-                              <a href="" class="btn btn-primary btn-sm mb-1" title="View Full Details">
+                              <a href="/practices/{{ item.practice.practice_code }}/"
+                                 class="btn btn-primary btn-sm mb-1"
+                                 title="View Full Details">
                                 <i class="fas fa-eye me-1"></i>Details
                               </a>
                             {% else %}

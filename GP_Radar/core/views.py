@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from catalog.models import GPPractices, GPDetails, GPPopulations
 
@@ -99,6 +99,10 @@ def get_age_data(practice):
         counter += 1
 
     return age_groups
+
+
+def get_Practices(request):
+    return redirect("/tables/practices")
 
 
 def get_Practice(request, id):

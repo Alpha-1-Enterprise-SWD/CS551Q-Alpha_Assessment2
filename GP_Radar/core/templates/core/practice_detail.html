@@ -9,7 +9,7 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'table_practices' %}">Dashboard</a>
       </li>
       <li class="breadcrumb-item active">{{ practice.name }}</li>
     </ol>
@@ -169,7 +169,7 @@
               <tbody>
                 {% for age_group_data in age_data %}
                   <tr>
-                    <td>{{ age_group_data.age_group }}</td>
+                    <td>{{ age_group_data.range }}</td>
                     <td>{{ age_group_data.male|default:0 }}</td>
                     <td>{{ age_group_data.female|default:0 }}</td>
                     <td>
@@ -206,7 +206,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <div>
-              <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+              <a href="{% url 'table_practices' %}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
               </a>
             </div>

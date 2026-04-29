@@ -62,7 +62,7 @@ def get_Practices(request):
     keyword = request.GET.get("keyword", "")
     address = request.GET.get("address", "")
     postcode = request.GET.get("postcode", "")
-    pagesize = int(request.GET.get("page-size", 5))
+    pagesize = int(request.GET.get("pagesize", 5))
 
     # Query all practices
     practices = GPPractices.objects.all()
@@ -80,9 +80,9 @@ def get_Practices(request):
     begin = 0
     end = 0
 
-    if total_page_num < page:
+    if total_page_num < page and page > 1:
         return redirect(
-            f"/tables/practices?page={1}&keyword={keyword}&address={address}&postcode={postcode}&page-size={pagesize}"
+            f"/tables/practices?page={1}&keyword={keyword}&address={address}&postcode={postcode}&pagesize={pagesize}"
         )
     else:
         begin = (page - 1) * pagesize

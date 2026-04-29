@@ -105,7 +105,7 @@
               <input type="text"
                      class="form-control"
                      id="postcode_search"
-                     name="postcode_search"
+                     name="postcode"
                      {% if filter_params.postcode == none %} value="" placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."{% else %} value="{{ filter_params.postcode }}"  {% endif %}
                      autofocus />
               <button type="submit" class="btn btn-primary">
@@ -386,13 +386,13 @@
                 {% if filter_params.page > 1 %}
                   <li class="page-item">
                     <a class="page-link"
-                       href="/tables/practices?page=1{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&page-size={{ filter_params.pagesize }}">
+                       href="/tables/practices?page=1{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&pagesize={{ filter_params.pagesize }}">
                       <i class="fas fa-angle-double-left"></i> First
                     </a>
                   </li>
                   <li class="page-item">
                     <a class="page-link"
-                       href="/tables/practices?page={{ filter_params.page|add:"-1" }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&page-size={{ filter_params.pagesize }}">
+                       href="/tables/practices?page={{ filter_params.page|add:"-1" }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&pagesize={{ filter_params.pagesize }}">
                       <i class="fas fa-angle-left"></i> Previous
                     </a>
                   </li>
@@ -405,20 +405,20 @@
                   {% elif num > filter_params.page|add:'-3' and num < filter_params.page|add:'3' %}
                     <li class="page-item">
                       <a class="page-link"
-                         href="/tables/practices?page={{ num }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&page-size={{ filter_params.pagesize }}">{{ num }}</a>
+                         href="/tables/practices?page={{ num }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&pagesize={{ filter_params.pagesize }}">{{ num }}</a>
                     </li>
                   {% endif %}
                 {% endfor %}
                 {% if filter_params.page < total_page_num %}
                   <li class="page-item">
                     <a class="page-link"
-                       href="/tables/practices?page={{ filter_params.page|add:1 }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&page-size={{ filter_params.pagesize }}">
+                       href="/tables/practices?page={{ filter_params.page|add:1 }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&pagesize={{ filter_params.pagesize }}">
                       Next <i class="fas fa-angle-right"></i>
                     </a>
                   </li>
                   <li class="page-item">
                     <a class="page-link"
-                       href="/tables/practices?page={{ total_page_num }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&page-size={{ filter_params.pagesize }}">
+                       href="/tables/practices?page={{ total_page_num }}{% if filter_params.keyword %}&keyword={{ filter_params.keyword }}{% endif %}{% if filter_params.address %}&address={{ filter_params.address }}{% endif %}{% if filter_params.postcode %}&postcode={{ filter_params.postcode }}{% endif %}&pagesize={{ filter_params.pagesize }}">
                       Last <i class="fas fa-angle-double-right"></i>
                     </a>
                   </li>

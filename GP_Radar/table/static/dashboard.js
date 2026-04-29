@@ -19,26 +19,41 @@ function initializeDashboard() {
 function setupPostcodeSearch() {
     const postcodeInput = document.getElementById('postcode_search');
     if (postcodeInput) {
+        // Debounce timer id used to avoid firing a request on every keypress
         let searchTimeout;
+
+        // When the user types into the postcode input, wait 500ms of inactivity
+        // before submitting the form. This reduces requests while typing.
         postcodeInput.addEventListener('input', function () {
+            // Clear any pending timeout so only the latest keystrokes trigger submission
             clearTimeout(searchTimeout);
+
+            // Start a new 500ms timer; if it completes we may submit the form
             searchTimeout = setTimeout(() => {
-                // Auto-submit search after 500ms delay
+                // Only auto-submit when user has typed at least 2 characters,
+                // or when the input has been cleared (length === 0).
                 if (postcodeInput.value.length >= 2 || postcodeInput.value.length === 0) {
+                    // Perform a normal form submit (will trigger page navigation)
                     document.getElementById('postcodeSearchForm').submit();
                 }
             }, 500);
         });
 
-        // Handle form submission
+        // Handle visual feedback when the form is submitted.
+        // Note: this handler does NOT call `e.preventDefault()`, so the browser
+        // will proceed with the normal form submission (page reload/navigation).
         document.getElementById('postcodeSearchForm').addEventListener('submit', function (e) {
-            // Show loading state
+            // Find the submit button inside the form and show a loading state
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
+
+            // Replace label with a spinner and disable to prevent duplicate clicks
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Searching...';
             submitBtn.disabled = true;
 
-            // Reset button after 2 seconds (in case of slow response)
+            // In case the request is slow, restore the button after 2 seconds.
+            // If the page actually navigates away this timeout is irrelevant,
+            // but it prevents a permanently disabled button if submission fails.
             setTimeout(() => {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
@@ -76,7 +91,7 @@ function changePageSize() {
     const currentUrl = new URL(window.location);
 
     // Update or add page_size parameter
-    currentUrl.searchParams.set('page_size', pageSize);
+    currentUrl.searchParams.set('pagesize', pageSize);
 
     // Reset to page 1 when changing page size
     currentUrl.searchParams.set('page', '1');

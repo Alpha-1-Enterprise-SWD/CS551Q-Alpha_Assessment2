@@ -23,8 +23,7 @@
             <div class="col-md-8">
               <h2 class="h3">{{ practice.name }}</h2>
               <p class="text-muted">
-                <i class="fas fa-map-marker-alt me-1"></i>{{ practice.address
-                }}
+                <i class="fas fa-map-marker-alt me-1"></i>{{ practice.address }}
                 <br />
                 <i class="fas fa-phone me-1"></i>{{ practice.telephone }}
                 <br />
@@ -42,11 +41,11 @@
                   <small class="text-muted">Patients</small>
                 </div>
                 <div class="col-4">
-                  <h4 class="text-success">{{ gp_count }}</h4>
+                  <h4 class="text-success">{{ doctor_num }}</h4>
                   <small class="text-muted">GPs</small>
                 </div>
                 <div class="col-4">
-                  <h4 class="text-warning">{{ patient_to_gp_ratio }}</h4>
+                  <h4 class="text-warning">{{ pat_doc_ratio }}</h4>
                   <small class="text-muted">P/G Ratio</small>
                 </div>
               </div>
@@ -69,7 +68,7 @@
     <div class="col-md-3">
       <div class="card bg-success text-white">
         <div class="card-body text-center">
-          <h4>{{ gp_count }}</h4>
+          <h4>{{ doctor_num }}</h4>
           <p class="card-text mb-0">GP Doctors</p>
         </div>
       </div>
@@ -77,7 +76,7 @@
     <div class="col-md-3">
       <div class="card bg-info text-white">
         <div class="card-body text-center">
-          <h4>{{ patient_to_gp_ratio }}</h4>
+          <h4>{{ pat_doc_ratio }}</h4>
           <p class="card-text mb-0">Patient/GP Ratio</p>
         </div>
       </div>
@@ -86,10 +85,9 @@
       <div class="card bg-warning text-white">
         <div class="card-body text-center">
           <h4>
-            {% if gp_count > 0 %}
-              {{ patient_to_gp_ratio|floatformat:0 }}
-            {% else
-              %}
+            {% if doctor_num > 0 %}
+              {{ pat_doc_ratio|floatformat:0 }}
+            {% else %}
               0
             {% endif %}
           </h4>
@@ -119,11 +117,10 @@
                 </tr>
               </thead>
               <tbody>
-                {% for gp in gps %}
+                {% for gp in doctors %}
                   <tr>
                     <td>
-                      <strong>{{ gp.forename }} {{ gp.middle_initial }} {{ gp.surname
-                      }}</strong>
+                      <strong>{{ gp.forename }} {{ gp.middle_initial }} {{ gp.surname }}</strong>
                     </td>
                     <td>
                       <span class="badge {% if 'REGISTRAR' in gp.designation %}bg-warning{% else %}bg-primary{% endif %}">
@@ -134,8 +131,7 @@
                     <td>
                       {% if gp.sex == 'Male' %}
                         <i class="fas fa-mars text-primary"></i> Male
-                      {% elif gp.sex
-                        == 'Female' %}
+                      {% elif gp.sex == 'Female' %}
                         <i class="fas fa-venus text-danger"></i> Female
                       {% else %}
                         <span class="text-muted">N/A</span>

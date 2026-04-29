@@ -160,7 +160,10 @@ def get_Practices(request):
         )
         Practice.male_patient_num = male_population
         Practice.female_patient_num = female_population
-        Practice.patient_gp_ratio = round(p.list_size / Practice.doctor_num, 1)
+        try:
+            Practice.patient_gp_ratio = round(p.list_size / Practice.doctor_num, 1)
+        except:
+            Practice.patient_gp_ratio = None
         total = p.list_size
 
         context["practices"].append(Practice)

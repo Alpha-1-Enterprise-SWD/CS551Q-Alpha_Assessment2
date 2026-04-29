@@ -177,3 +177,7 @@ def get_Practices(request):
     )
 
     return render(request, "table/dashboard.html", context)
+
+
+def to_practices_table(request):
+    return redirect("/tables/practices")

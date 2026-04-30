@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from catalog.models import GPDetails, GPPractices, GPPopulations
+from catalog.models import GPDetails, GPPractices, GPPopulations, GPPractitioners
 import math
 from django.shortcuts import redirect
 
@@ -56,6 +56,7 @@ def get_avg_pat_doc_ratio():
     return avg_pat_doc_ratio
 
 
+# need to be revised
 def get_Practices(request):
     # Get parameters in URL
     page = int(request.GET.get("page", 1))
@@ -66,6 +67,8 @@ def get_Practices(request):
 
     # Query all practices
     practices = GPPractices.objects.all()
+    # # Query all gp details
+    # gp_details = GPDetails.objects.all()
 
     # filter practice list according to parameters
     if keyword != None:
@@ -93,8 +96,8 @@ def get_Practices(request):
             end = begin + pagesize
             practices = practices[begin:end]
 
-    doctors = GPDetails.objects.all()
-    total_doctor_num = len(doctors)
+    doctors = GPPractitioners.objects.all()
+    total_doctor_num = doctors.count()
     populations = GPPopulations.objects.all()
 
     context = {
@@ -112,9 +115,16 @@ def get_Practices(request):
 
     for p in practices:
         Practice = PracticeData(p)
-        doctors_list = doctors.filter(practice=p.practice_code)
+
+        doctors_list = []
+        details = GPDetails.objects.filter(practice=p)
+        for detail in details:
+            doctors_list.append(
+                GPPractitioners.objects.filter(medical_council_number=detail.gp_code)
+            )
+
         Practice.doctors = doctors_list
-        Practice.doctor_num = doctors_list.count()
+        Practice.doctor_num = len(doctors_list)
 
         female = populations.get(practice=p.practice_code, sex="Female")
         male = populations.get(practice=p.practice_code, sex="Male")

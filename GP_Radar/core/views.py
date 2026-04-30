@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
-from catalog.models import GPPractices, GPDetails, GPPopulations
+from catalog.models import GPPractices, GPDetails, GPPopulations, GPPractitioners
 
 # Create your views here.
 
@@ -109,16 +109,24 @@ def get_Practice(request, id):
     try:
         practice = GPPractices.objects.get(practice_code=id)
     except GPPractices.DoesNotExist:
-        raise Http404("Poll does not exist")
+        raise Http404("GPPractice does not exist")
 
-    donctors = GPDetails.objects.filter(practice=practice)
+    doctors = []
+    details = GPDetails.objects.filter(practice=practice)
+    for detail in details:
+        doctors.append(detail.gp_code)
+
+    try:
+        pat_doc_ratio = round(patients / len(doctors), 1)
+    except:
+        pat_doc_ratio = "N/A"
+
     patients = practice.list_size
-    age_group_data = GPPopulations
     context = {
         "practice": practice,
-        "doctor_num": donctors.count(),
-        "pat_doc_ratio": round(practice.list_size / donctors.count(), 1),
-        "doctors": donctors,
+        "doctor_num": len(doctors),
+        "pat_doc_ratio": pat_doc_ratio,
+        "doctors": doctors,
         "age_data": get_age_data(practice),
     }
 

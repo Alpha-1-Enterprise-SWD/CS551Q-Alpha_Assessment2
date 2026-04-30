@@ -119,9 +119,7 @@ def get_Practices(request):
         doctors_list = []
         details = GPDetails.objects.filter(practice=p)
         for detail in details:
-            doctors_list.append(
-                GPPractitioners.objects.filter(medical_council_number=detail.gp_code)
-            )
+            doctors_list.append(detail.gp_code)
 
         Practice.doctors = doctors_list
         Practice.doctor_num = len(doctors_list)

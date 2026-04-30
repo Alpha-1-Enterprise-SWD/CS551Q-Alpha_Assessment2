@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "catalog",
+    "table",
+    "core",
+    "django.contrib.humanize",
 ]
 
 MIDDLEWARE = [
@@ -59,7 +62,7 @@ ROOT_URLCONF = "GP_Radar.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

@@ -115,18 +115,22 @@ def get_Practice(request, id):
     details = GPDetails.objects.filter(practice=practice)
     for detail in details:
         doctors.append(detail.gp_code)
-
+    patients = practice.list_size
     try:
-        pat_doc_ratio = round(patients / len(doctors), 1)
+        pat_doc_ratio = patients / len(doctors)
+        pat_doc_ratio = round(pat_doc_ratio, 1)
     except:
         pat_doc_ratio = "N/A"
 
-    patients = practice.list_size
+    designations = []
+    for detail in details:
+        designations.append(detail.designation)
+
     context = {
         "practice": practice,
         "doctor_num": len(doctors),
         "pat_doc_ratio": pat_doc_ratio,
-        "doctors": doctors,
+        "doctors": zip(doctors, designations),
         "age_data": get_age_data(practice),
     }
 

@@ -117,14 +117,14 @@
                 </tr>
               </thead>
               <tbody>
-                {% for gp in doctors %}
+                {% for gp, designation in doctors %}
                   <tr>
                     <td>
                       <strong>{{ gp.forename }} {{ gp.middle_initial }} {{ gp.surname }}</strong>
                     </td>
                     <td>
                       <span class="badge {% if 'REGISTRAR' in gp.designation %}bg-warning{% else %}bg-primary{% endif %}">
-                        {{ gp.designation }}
+                        {{ designation }}
                       </span>
                     </td>
                     <td>{{ gp.medical_council_number }}</td>

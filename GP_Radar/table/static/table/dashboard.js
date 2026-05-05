@@ -10,7 +10,7 @@ function initializeDashboard() {
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-    
+
     // Setup postcode search
     setupPostcodeSearch();
 }
@@ -19,26 +19,41 @@ function initializeDashboard() {
 function setupPostcodeSearch() {
     const postcodeInput = document.getElementById('postcode_search');
     if (postcodeInput) {
+        // Debounce timer id used to avoid firing a request on every keypress
         let searchTimeout;
-        postcodeInput.addEventListener('input', function() {
+
+        // When the user types into the postcode input, wait 500ms of inactivity
+        // before submitting the form. This reduces requests while typing.
+        postcodeInput.addEventListener('input', function () {
+            // Clear any pending timeout so only the latest keystrokes trigger submission
             clearTimeout(searchTimeout);
+
+            // Start a new 500ms timer; if it completes we may submit the form
             searchTimeout = setTimeout(() => {
-                // Auto-submit search after 500ms delay
+                // Only auto-submit when user has typed at least 2 characters,
+                // or when the input has been cleared (length === 0).
                 if (postcodeInput.value.length >= 2 || postcodeInput.value.length === 0) {
+                    // Perform a normal form submit (will trigger page navigation)
                     document.getElementById('postcodeSearchForm').submit();
                 }
             }, 500);
         });
-        
-        // Handle form submission
-        document.getElementById('postcodeSearchForm').addEventListener('submit', function(e) {
-            // Show loading state
+
+        // Handle visual feedback when the form is submitted.
+        // Note: this handler does NOT call `e.preventDefault()`, so the browser
+        // will proceed with the normal form submission (page reload/navigation).
+        document.getElementById('postcodeSearchForm').addEventListener('submit', function (e) {
+            // Find the submit button inside the form and show a loading state
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
+
+            // Replace label with a spinner and disable to prevent duplicate clicks
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Searching...';
             submitBtn.disabled = true;
-            
-            // Reset button after 2 seconds (in case of slow response)
+
+            // In case the request is slow, restore the button after 2 seconds.
+            // If the page actually navigates away this timeout is irrelevant,
+            // but it prevents a permanently disabled button if submission fails.
             setTimeout(() => {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
@@ -60,7 +75,7 @@ function clearPostcodeSearch() {
 function toggleView(viewType) {
     const tableView = document.getElementById('tableView');
     const cardView = document.getElementById('cardView');
-    
+
     if (viewType === 'table') {
         tableView.style.display = 'block';
         cardView.style.display = 'none';
@@ -74,13 +89,13 @@ function toggleView(viewType) {
 function changePageSize() {
     const pageSize = document.getElementById('pageSize').value;
     const currentUrl = new URL(window.location);
-    
+
     // Update or add page_size parameter
-    currentUrl.searchParams.set('page_size', pageSize);
-    
+    currentUrl.searchParams.set('pagesize', pageSize);
+
     // Reset to page 1 when changing page size
     currentUrl.searchParams.set('page', '1');
-    
+
     // Reload the page with new parameters
     window.location.href = currentUrl.toString();
 }
@@ -91,18 +106,18 @@ function toggleGPList(element) {
     const gpList = document.getElementById(targetId);
     const icon = element.querySelector('i');
     const toggleText = element.querySelector('.toggle-text');
-    
+
     if (!gpList) return;
-    
+
     const hiddenItems = gpList.querySelectorAll('.gp-item[style*="display: none"]');
     const visibleItems = gpList.querySelectorAll('.gp-item[style*="display: block"]');
-    
+
     if (hiddenItems.length > 0) {
         // Show all items
         gpList.querySelectorAll('.gp-item').forEach(item => {
             item.style.display = 'block';
         });
-        
+
         // Update UI to show collapse state
         icon.className = 'fas fa-minus-circle me-1';
         toggleText.textContent = 'Show less';
@@ -114,7 +129,7 @@ function toggleGPList(element) {
                 item.style.display = 'none';
             }
         });
-        
+
         // Update UI to show expand state
         icon.className = 'fas fa-plus-circle me-1';
         const hiddenCount = allItems.length - 3;
@@ -126,10 +141,10 @@ function toggleGPList(element) {
 function loadHealthBoardChart() {
     const ctx = document.getElementById('healthBoardChart');
     if (!ctx) return;
-    
+
     // Get health board data from the page
     const healthBoardData = getHealthBoardData();
-    
+
     new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -165,7 +180,7 @@ function loadHealthBoardChart() {
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             const label = context.label || '';
                             const value = context.parsed || 0;
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -183,9 +198,9 @@ function loadHealthBoardChart() {
 function loadRatioChart() {
     const ctx = document.getElementById('ratioChart');
     if (!ctx) return;
-    
+
     const ratioData = getRatioData();
-    
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -209,7 +224,7 @@ function loadRatioChart() {
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return `Ratio: ${context.parsed.y.toFixed(1)}`;
                         }
                     }
@@ -238,9 +253,9 @@ function loadRatioChart() {
 function loadSizeChart() {
     const ctx = document.getElementById('sizeChart');
     if (!ctx) return;
-    
+
     const sizeData = getSizeData();
-    
+
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -267,7 +282,7 @@ function loadSizeChart() {
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return `Patients: ${context.parsed.y.toLocaleString()}`;
                         }
                     }
@@ -296,7 +311,7 @@ function loadSizeChart() {
 function getHealthBoardData() {
     const healthBoards = {};
     const rows = document.querySelectorAll('#tableView tbody tr');
-    
+
     rows.forEach(row => {
         const badge = row.querySelector('.badge');
         if (badge) {
@@ -304,12 +319,12 @@ function getHealthBoardData() {
             healthBoards[boardName] = (healthBoards[boardName] || 0) + 1;
         }
     });
-    
+
     // Limit to top 8 boards for better visualization
     const sortedBoards = Object.entries(healthBoards)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8);
-    
+
     return {
         labels: sortedBoards.map(([name]) => name),
         data: sortedBoards.map(([, count]) => count)
@@ -320,7 +335,7 @@ function getHealthBoardData() {
 function getRatioData() {
     const rows = document.querySelectorAll('#tableView tbody tr');
     const ratios = [];
-    
+
     rows.forEach((row, index) => {
         const ratioCell = row.cells[5]; // Patient/GP Ratio column
         if (ratioCell) {
@@ -334,11 +349,11 @@ function getRatioData() {
             }
         }
     });
-    
+
     // Sort by practice name and take first 10 for visualization
     ratios.sort((a, b) => a.practice.localeCompare(b.practice));
     const topRatios = ratios.slice(0, 10);
-    
+
     return {
         labels: topRatios.map(r => r.practice.length > 15 ? r.practice.substring(0, 15) + '...' : r.practice),
         data: topRatios.map(r => r.ratio)
@@ -349,7 +364,7 @@ function getRatioData() {
 function getSizeData() {
     const rows = document.querySelectorAll('#tableView tbody tr');
     const sizes = [];
-    
+
     rows.forEach(row => {
         const sizeCell = row.cells[3]; // Total Patients column
         if (sizeCell) {
@@ -360,7 +375,7 @@ function getSizeData() {
             }
         }
     });
-    
+
     // Group practices by size ranges
     const ranges = {
         '0-1000': 0,
@@ -369,7 +384,7 @@ function getSizeData() {
         '5001-10000': 0,
         '10000+': 0
     };
-    
+
     sizes.forEach(size => {
         if (size <= 1000) ranges['0-1000']++;
         else if (size <= 2500) ranges['1001-2500']++;
@@ -377,7 +392,7 @@ function getSizeData() {
         else if (size <= 10000) ranges['5001-10000']++;
         else ranges['10000+']++;
     });
-    
+
     return {
         labels: Object.keys(ranges),
         data: Object.values(ranges)
@@ -388,15 +403,15 @@ function getSizeData() {
 function initializeMap() {
     const mapContainer = document.getElementById('map');
     if (!mapContainer) return;
-    
+
     // Initialize Leaflet map centered on Scotland
     map = L.map('map').setView([56.4907, -4.2026], 6);
-    
+
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-    
+
     // Add practice markers
     addPracticeMarkers();
 }
@@ -404,21 +419,21 @@ function initializeMap() {
 // Add practice markers to map
 function addPracticeMarkers() {
     if (!map) return;
-    
+
     // Clear existing markers
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
-    
+
     // Get practice data from the table
     const rows = document.querySelectorAll('#tableView tbody tr');
-    
+
     rows.forEach((row, index) => {
         const practiceName = row.querySelector('strong').textContent;
         const address = row.querySelector('.text-muted').textContent;
         const patientCount = row.cells[2].textContent.trim();
         const gpCount = row.cells[3].textContent.trim();
         const ratio = row.cells[4].textContent.trim();
-        
+
         // Create popup content
         const popupContent = `
             <div style="min-width: 200px;">
@@ -440,16 +455,16 @@ function addPracticeMarkers() {
                 </div>
             </div>
         `;
-        
+
         // Create marker (using approximate coordinates for demonstration)
         // In a real implementation, you'd use actual latitude/longitude from the database
         const lat = 56.4907 + (Math.random() - 0.5) * 2;
         const lng = -4.2026 + (Math.random() - 0.5) * 4;
-        
+
         const marker = L.marker([lat, lng])
             .bindPopup(popupContent)
             .addTo(map);
-        
+
         markers.push(marker);
     });
 }
@@ -460,10 +475,10 @@ function showOnMap(latitude, longitude) {
         initializeMap();
         return;
     }
-    
+
     if (latitude && longitude) {
         map.setView([latitude, longitude], 10);
-        
+
         // Find and open the marker popup
         markers.forEach(marker => {
             const pos = marker.getLatLng();
@@ -481,13 +496,13 @@ function showOnMap(latitude, longitude) {
 function exportData() {
     // Get current filter parameters
     const urlParams = new URLSearchParams(window.location.search);
-    
+
     // Create export URL (this would be implemented as a Django view)
     const exportUrl = `{% url 'export_data' %}?${urlParams.toString()}`;
-    
+
     // For now, just show a message
     alert('Export functionality would download filtered data as CSV/Excel file');
-    
+
     // In a real implementation:
     // window.location.href = exportUrl;
 }
@@ -496,11 +511,11 @@ function exportData() {
 function exportPractice(practiceCode) {
     // Create export data for specific practice
     const exportUrl = `/api/export-practice/${practiceCode}/`;
-    
+
     // For now, create a simple CSV export
     const rows = document.querySelectorAll(`#tableView tbody tr`);
     let csvContent = "Practice Name,Address,Postcode,Telephone,Health Board,Patient Count,GP Count,Patient/GP Ratio,Male Population,Female Population\n";
-    
+
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
         if (cells.length >= 7) {
@@ -516,11 +531,11 @@ function exportPractice(practiceCode) {
             const popParts = populationInfo.split('\n');
             const malePop = popParts[0] ? popParts[0].replace('M', '').trim() : '0';
             const femalePop = popParts[1] ? popParts[1].replace('F', '').trim() : '0';
-            
+
             csvContent += `"${practiceName}","${address}","${postcode}","${telephone}","${healthBoard}",${patientCount},${gpCount},${ratio},${malePop},${femalePop}\n`;
         }
     });
-    
+
     // Create download link
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -541,7 +556,7 @@ function refreshData() {
         refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         refreshBtn.disabled = true;
     }
-    
+
     // Reload the page
     setTimeout(() => {
         window.location.reload();
@@ -554,7 +569,7 @@ function printCurrentView() {
 }
 
 // Keyboard shortcuts
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // Ctrl/Cmd + F: Focus search
     if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
@@ -563,13 +578,13 @@ document.addEventListener('keydown', function(e) {
             searchInput.focus();
         }
     }
-    
+
     // Ctrl/Cmd + R: Refresh data (prevent browser refresh)
     if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
         e.preventDefault();
         refreshData();
     }
-    
+
     // Escape: Clear filters
     if (e.key === 'Escape') {
         clearFilters();
@@ -591,17 +606,17 @@ function setupAutoRefresh(interval = 300000) { // 5 minutes default
         // Only auto-refresh if user hasn't interacted recently
         const lastInteraction = sessionStorage.getItem('lastInteraction');
         const now = Date.now();
-        
+
         if (!lastInteraction || (now - parseInt(lastInteraction)) > interval) {
             refreshData();
         }
     }, interval);
-    
+
     // Track user interactions
     document.addEventListener('click', () => {
         sessionStorage.setItem('lastInteraction', Date.now().toString());
     });
-    
+
     document.addEventListener('keypress', () => {
         sessionStorage.setItem('lastInteraction', Date.now().toString());
     });
@@ -634,13 +649,13 @@ function debounce(func, wait) {
 }
 
 // Error handling
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
     console.error('Dashboard error:', e.error);
     // In production, you might want to send this to an error tracking service
 });
 
 // Performance monitoring
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     const loadTime = performance.now();
     console.log(`Dashboard loaded in ${loadTime.toFixed(2)}ms`);
 });

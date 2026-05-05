@@ -2,7 +2,24 @@ import csv
 import os
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from catalog.models import GPPractices, GPDetails, GPPopulations
+from catalog.models import GPPractices, GPPractitioners, GPDetails, GPPopulations
+
+HB_LOOKUP = {
+    'S08000015': 'NHS Ayrshire and Arran',
+    'S08000016': 'NHS Borders',
+    'S08000017': 'NHS Dumfries and Galloway',
+    'S08000019': 'NHS Forth Valley',
+    'S08000020': 'NHS Grampian',
+    'S08000022': 'NHS Highland',
+    'S08000024': 'NHS Lothian',
+    'S08000025': 'NHS Orkney',
+    'S08000026': 'NHS Shetland',
+    'S08000028': 'NHS Western Isles',
+    'S08000029': 'NHS Fife',
+    'S08000030': 'NHS Tayside',
+    'S08000031': 'NHS Greater Glasgow and Clyde',
+    'S08000032': 'NHS Lanarkshire',
+}
 
 class Command(BaseCommand):
     help = 'Import GP data from CSV files'
@@ -32,6 +49,9 @@ class Command(BaseCommand):
         try:
             # Import practices
             self.import_practices(data_path)
+
+            # Import practitioners
+            self.import_gp_practitioners(data_path)
             
             # # Import GP details
             self.import_gp_details(data_path)
@@ -49,6 +69,7 @@ class Command(BaseCommand):
         self.stdout.write('Clearing existing data...')
         GPPopulations.objects.all().delete()
         GPDetails.objects.all().delete()
+        GPPractitioners.objects.all().delete()
         GPPractices.objects.all().delete()
         self.stdout.write('Existing data cleared.')
 
@@ -81,7 +102,7 @@ class Command(BaseCommand):
                             'address': address,
                             'postcode': row.get('Postcode', ''),
                             'telephone': row.get('TelephoneNumber', ''),
-                            'health_board': row.get('HB', ''),
+                            'health_board': HB_LOOKUP.get(row.get('HB', ''), row.get('HB', '')),
                         }
                     )
                     
@@ -91,6 +112,37 @@ class Command(BaseCommand):
         
         practice_count = GPPractices.objects.count()
         self.stdout.write(f'Imported {practice_count} GP practices.')
+
+    def import_gp_practitioners(self, data_path):
+        self.stdout.write('Importing GP Practitioners ...')
+        file_path = os.path.join(data_path, 'GPPractitioners.csv')
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"GPPractitioners.csv not found in {data_path}")
+        
+        with open(file_path, 'r', encoding='utf-8-sig') as file:
+            reader = csv.DictReader(file)
+
+            with transaction.atomic():
+                for row in reader:
+                    try:
+                        GPPractitioners.objects.update_or_create(
+                            medical_council_number=row.get('GeneralMedicalCouncilNumber', ''),
+                            defaults={
+                                'forename': row.get('Forename', ''),
+                                'middle_initial': row.get('MiddleInitial', '') or None,
+                                'surname': row.get('Surname', ''),
+                                'sex': row.get('Sex', '') or None
+                            }
+                        )
+                    except Exception as e:
+                        self.stdout.write(
+                            self.style.WARNING(f"Error importing GP {row.get('GeneralMedicalCouncilNumber', '')}: {e}")
+                        )
+                        continue
+        
+        practitioners_count = GPPractitioners.objects.count()
+        self.stdout.write(f'Imported {practitioners_count} GP practitioners')
 
     def import_gp_details(self, data_path):
         self.stdout.write('Importing GP details...')
@@ -105,23 +157,28 @@ class Command(BaseCommand):
             with transaction.atomic():
                 for row in reader:
                     try:
+                        gp = GPPractitioners.objects.get(medical_council_number=row.get('GeneralMedicalCouncilNumber', ''))
                         practice = GPPractices.objects.get(practice_code=row.get('PracticeCode', ''))
-                        
+
                         GPDetails.objects.update_or_create(
-                            medical_council_number=row.get('GeneralMedicalCouncilNumber', ''),
-                            defaults={
+                            gp_code = gp,
+                            practice=practice,
+                            defaults= {
                                 'designation': row.get('GPDesignation', ''),
-                                'forename': row.get('Forename', ''),
-                                'middle_initial': row.get('MiddleInitial', ''),
-                                'surname': row.get('Surname', ''),
-                                'sex': row.get('Sex', ''),
-                                'practice': practice,
                             }
                         )
+                    except GPPractitioners.DoesNotExist:
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f"Practitioner {row.get('GeneralMedicalCouncilNumber', '')} not found"
+                            )
+                        )
+                        continue
+
                     except GPPractices.DoesNotExist:
                         self.stdout.write(
                             self.style.WARNING(
-                                f"Practice {row.get('PracticeCode', '')} not found for GP {row.get('Forename', '')} {row.get('Surname', '')}"
+                                f"Practice {row.get('PracticeCode', '')} not found"
                             )
                         )
                         continue

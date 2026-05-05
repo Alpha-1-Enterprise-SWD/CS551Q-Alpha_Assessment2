@@ -17,20 +17,30 @@ class GPPractices(models.Model):
     class Meta:
         ordering = ["name"]
 
-class GPDetails(models.Model):
+class GPPractitioners(models.Model):
     medical_council_number = models.CharField(max_length=10, primary_key=True)
-    designation = models.CharField(max_length=100)
     forename = models.CharField(max_length=100)
     middle_initial = models.CharField(max_length=10, null=True, blank=True)
     surname = models.CharField(max_length=100)
     sex = models.CharField(max_length=50, null=True, blank=True)
-    practice = models.ForeignKey('GPPractices', on_delete=models.CASCADE, related_name="gp")
 
     def __str__(self):
         return f"{self.forename} {self.surname}"
     
     class Meta:
         ordering = ["surname", "forename"]
+
+class GPDetails(models.Model):
+    gp_code = models.ForeignKey('GPPractitioners', on_delete=models.CASCADE, related_name="practice_links")
+    practice = models.ForeignKey('GPPractices', on_delete=models.CASCADE, related_name="gp_links")
+    designation = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.gp_code.forename} {self.gp_code.surname} is {self.designation} at {self.practice.name}"
+    
+    class Meta:
+        unique_together = ["gp_code", "practice"]
+        ordering = ["gp_code__surname", "gp_code__forename"]
 
 class GPPopulations(models.Model):
     practice = models.ForeignKey('GPPractices', on_delete=models.CASCADE, related_name="populations")

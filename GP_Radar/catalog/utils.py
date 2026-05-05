@@ -8,7 +8,7 @@ def get_coordinates(postcode):
         return result['latitude'], result ['longitude']
     return None, None
 
-HB_lookup = {
+HB_LOOKUP = {
     'S08000015': 'Ayrshire and Arran',
     'S08000016': 'Borders',
     'S08000017': 'Dumfries and Galloway',

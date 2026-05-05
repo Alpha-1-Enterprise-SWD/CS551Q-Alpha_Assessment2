@@ -2,7 +2,7 @@ import csv
 import os
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from catalog.models import GPPractices, GPPractitioners, GPDetails, 
+from catalog.models import GPPractices, GPPractitioners, GPDetails, GPPopulations
 from catalog.utils import HB_LOOKUP, get_coordinates
 
 class Command(BaseCommand):
@@ -77,6 +77,8 @@ class Command(BaseCommand):
                     if row.get('AddressLine3'):
                         address_parts.append(row['AddressLine3'])
                     address = ', '.join(address_parts)
+
+                    lat, lon = get_coordinates(address, row.get('Postcode', '')),
                     
                     GPPractices.objects.update_or_create(
                         practice_code=row.get('PracticeCode', ''),
@@ -87,6 +89,8 @@ class Command(BaseCommand):
                             'postcode': row.get('Postcode', ''),
                             'telephone': row.get('TelephoneNumber', ''),
                             'health_board': HB_LOOKUP.get(row.get('HB', ''), row.get('HB', '')),
+                            'latitude': lat,
+                            'longitude': lon,
                         }
                     )
                 

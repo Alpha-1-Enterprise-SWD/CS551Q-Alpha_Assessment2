@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "catalog",
     "table",
     "core",
+    "map",
     "django.contrib.humanize",
 ]
 

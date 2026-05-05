@@ -19,5 +19,5 @@ Thumbs.db
 # environment variables
 .env
 
-# database
-db.sqlite3
+# Database
+*.sqlite3

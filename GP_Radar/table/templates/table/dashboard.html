@@ -106,7 +106,7 @@
                      class="form-control"
                      id="postcode_search"
                      name="postcode"
-                     {% if filter_params.postcode == none %} value="" placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..."{% else %} value="{{ filter_params.postcode }}"  {% endif %}
+                     {% if filter_params.postcode == none %} value="" placeholder="Enter postcode (e.g., DD2 5NH, PH7 3SA)..." {% else %} value="{{ filter_params.postcode }}" {% endif %}
                      autofocus />
               <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search me-1"></i>Search
@@ -150,7 +150,7 @@
           </div>
           <div class="col-lg-2 col-md-6 clear-search-wrap">
             <label class="form-label d-none d-md-block">&nbsp;</label>
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="d-flex align-items-center gap-2 flex-wrap" style="margin-bottom: 50px;">
               <button type="button"
                       class="btn btn-outline-secondary btn-sm clear-search-btn"
                       onclick="clearPostcodeSearch()">

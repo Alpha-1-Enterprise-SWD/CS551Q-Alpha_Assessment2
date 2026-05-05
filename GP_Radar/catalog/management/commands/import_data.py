@@ -78,7 +78,7 @@ class Command(BaseCommand):
                         address_parts.append(row['AddressLine3'])
                     address = ', '.join(address_parts)
 
-                    lat, lon = get_coordinates(address, row.get('Postcode', '')),
+                    lat, lon = get_coordinates(address, row.get('Postcode', ''))
                     
                     GPPractices.objects.update_or_create(
                         practice_code=row.get('PracticeCode', ''),
@@ -93,7 +93,7 @@ class Command(BaseCommand):
                             'longitude': lon,
                         }
                     )
-                
+                    
                     # for p in GPPractices.objects.all():
                     #     print(f'{p.practice_code} | {p.name[:30]} | {p.postcode} | {p.list_size} | {p.address}')
         

@@ -452,13 +452,26 @@
         </div>
         <div class="card-body">
           <canvas id="healthBoardChart" height="300"></canvas>
+          {{ health_board_data|json_script:"health-board-data" }}
         </div>
       </div>
     </div>
-    {% include "map/_map.html" %}
+    <div class="col-md-6">
+      <!-- Practice Locations Map -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-map me-2"></i>Practice Locations
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          <div id="map" style="height: 300px"></div>
+          {{ map_practices|json_script:"map-practices-data" }}
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
-{% comment %} {{ health_board_chart|json_script:"health-board-data" }} {% endcomment %}
 {% block scripts %}
   <script src="{% static 'table/dashboard.js' %}"></script>
   <script>

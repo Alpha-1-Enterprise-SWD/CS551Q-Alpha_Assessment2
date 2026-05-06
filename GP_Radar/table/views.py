@@ -2,7 +2,7 @@ from django.shortcuts import render
 from catalog.models import GPDetails, GPPractices, GPPopulations, GPPractitioners
 import math
 from django.shortcuts import redirect
-
+from map.views import getPracticeMarkers
 
 # Create your views here.
 
@@ -67,8 +67,6 @@ def get_Practices(request):
 
     # Query all practices
     practices = GPPractices.objects.all()
-    # # Query all gp details
-    # gp_details = GPDetails.objects.all()
 
     # filter practice list according to parameters
     if keyword != None:
@@ -183,6 +181,9 @@ def get_Practices(request):
         keyword=keyword,
         pagesize=pagesize,
     )
+
+    map_practices = getPracticeMarkers(context)
+    context["map_practices"] = map_practices
 
     return render(request, "table/dashboard.html", context)
 

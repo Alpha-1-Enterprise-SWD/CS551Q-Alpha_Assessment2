@@ -142,6 +142,7 @@ function loadHealthBoardChart() {
     const ctx = document.getElementById('healthBoardChart');
     if (!ctx) return;
 
+    // The chart data is rendered by the Django template into a hidden JSON script tag.
     const dataElement = document.getElementById("health-board-data");
     if (!dataElement) return;
 
@@ -316,6 +317,7 @@ function getRatioData() {
     const ratios = [];
 
     rows.forEach((row, index) => {
+        // Column index 5 is the Patient/GP Ratio column in the table layout.
         const ratioCell = row.cells[5]; // Patient/GP Ratio column
         if (ratioCell) {
             const ratioText = ratioCell.textContent.trim();
@@ -345,6 +347,7 @@ function getSizeData() {
     const sizes = [];
 
     rows.forEach(row => {
+        // Column index 3 is the Total Patients column in the table layout.
         const sizeCell = row.cells[3]; // Total Patients column
         if (sizeCell) {
             const sizeText = sizeCell.querySelector('strong').textContent.trim();
@@ -403,6 +406,7 @@ function addPracticeMarkers() {
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
 
+    // Marker data is passed from Django as JSON in the page template.
     const dataElement = document.getElementById("map-practices-data");
     if (!dataElement) return;
 
@@ -445,6 +449,7 @@ function exportData() {
     // Get current filter parameters
     const urlParams = new URLSearchParams(window.location.search);
 
+    // This URL is a placeholder here; the actual export endpoint should be passed from the template.
     // Create export URL (this would be implemented as a Django view)
     const exportUrl = `{% url 'export_data' %}?${urlParams.toString()}`;
 

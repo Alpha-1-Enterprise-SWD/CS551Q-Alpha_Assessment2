@@ -26,13 +26,17 @@ body {
 }
 
 /* Footer */
-.bg-gradient-dark {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+footer {
+  background-color: #0d6efd;
+  color: #fff;
 }
 
 footer h5,
 footer p,
-footer small {
+footer small,
+footer .text-muted,
+footer a {
+  color: #fff;
   padding: 0.25rem 0;
 }
 
@@ -40,6 +44,7 @@ footer hr {
   border-color: rgba(255, 255, 255, 0.35);
 }
 
+<<<<<<< HEAD
 /* Footer hover effects */
 .hover-light {
   transition: all 0.3s ease;
@@ -139,6 +144,8 @@ footer .badge.bg-success {
   box-shadow: 0 1px 4px rgba(13, 110, 253, 0.3);
 }
 
+=======
+>>>>>>> 4bc3200c1ea0f1bb409890f05d392fe5c67c6cdc
 /* Cards */
 .card {
   border: 1px solid #e2e8f0;

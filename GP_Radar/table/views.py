@@ -170,7 +170,6 @@ def get_Practices(request):
             Practice.patient_gp_ratio = round(p.list_size / Practice.doctor_num, 1)
         except:
             Practice.patient_gp_ratio = None
-        total = p.list_size
 
         context["practices"].append(Practice)
 

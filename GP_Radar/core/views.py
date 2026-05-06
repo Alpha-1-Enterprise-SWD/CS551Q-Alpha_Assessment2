@@ -5,15 +5,8 @@ from catalog.models import GPPractices, GPDetails, GPPopulations
 # Create your views here.
 
 
-def map(request):
-    pass
-
-
-def table(request):
-    pass
-
-
 class AgeGroup:
+    # Small data holder for one age band in the practice detail chart.
     def __init__(self):
         self.range = None
         self.female = None
@@ -22,9 +15,11 @@ class AgeGroup:
 
 
 def get_age_data(practice):
+    # Fetch the female and male population rows for the selected practice.
     females = GPPopulations.objects.get(practice=practice, sex="Female")
     males = GPPopulations.objects.get(practice=practice, sex="Male")
     age_groups = []
+    # Age labels shown on the chart.
     age_range = [
         "0~4",
         "5~9",
@@ -46,6 +41,7 @@ def get_age_data(practice):
         "85+",
     ]
     counter = 0
+    # Build one AgeGroup object per age band using the female counts first.
     for value in [
         females.ages00to04,
         females.ages05to09,
@@ -72,6 +68,7 @@ def get_age_data(practice):
         counter += 1
         age_groups.append(ag)
     counter = 0
+    # Fill in the male counts and compute the total for each age band.
     for value in [
         males.ages00to04,
         males.ages05to09,
@@ -102,30 +99,36 @@ def get_age_data(practice):
 
 
 def get_Practices(request):
+    # Keep the old route working by redirecting to the main practices table.
     return redirect("/tables/practices")
 
 
 def get_Practice(request, id):
+    # Look up the practice by its practice code and return 404 if it does not exist.
     try:
         practice = GPPractices.objects.get(practice_code=id)
     except GPPractices.DoesNotExist:
         raise Http404("GPPractice does not exist")
 
+    # Collect GP codes for display on the detail page.
     doctors = []
     details = GPDetails.objects.filter(practice=practice)
     for detail in details:
         doctors.append(detail.gp_code)
     patients = practice.list_size
     try:
+        # Guard against division by zero when no doctors are linked to the practice.
         pat_doc_ratio = patients / len(doctors)
         pat_doc_ratio = round(pat_doc_ratio, 1)
     except:
         pat_doc_ratio = "N/A"
 
+    # Pair GP codes with their designations so the template can render both together.
     designations = []
     for detail in details:
         designations.append(detail.designation)
 
+    # Assemble all data needed by the detail template.
     context = {
         "practice": practice,
         "doctor_num": len(doctors),

@@ -8,6 +8,7 @@ from map.views import getPracticeMarkers
 
 
 class TableFilterParam:
+    # Store the current filter state so the template can keep form values in sync.
     def __init__(self, page, address, postcode, keyword, pagesize):
         self.page = page
         self.postcode = postcode
@@ -17,6 +18,7 @@ class TableFilterParam:
 
 
 class PracticeData:
+    # Lightweight container for computed values that are not stored directly in the model.
     def __init__(self, practice):
         self.practice = practice
         self.doctors = []
@@ -51,19 +53,57 @@ def get_avg_pat_doc_ratio():
             avg_pat_doc_ratio += p.list_size / doctor_num_by_practice
         else:
             valid_practice -= 1
-    avg_pat_doc_ratio = round(avg_pat_doc_ratio / valid_practice, 1)
+    try:
+        avg_pat_doc_ratio = round(avg_pat_doc_ratio / valid_practice, 1)
+    except:
+        avg_pat_doc_ratio = None
 
     return avg_pat_doc_ratio
+
+
+def safe_int(value, default, minimum=1):
+    try:
+        result = int(value)
+        return max(result, minimum)
+    except:
+        return default
+
+
+def get_Populations(populations, practice_code, sex):
+    try:
+        record = populations.get(practice=practice_code, sex=sex)
+        return (
+            record.ages00to04
+            + record.ages05to09
+            + record.ages10to14
+            + record.ages15to19
+            + record.ages20to24
+            + record.ages25to29
+            + record.ages30to34
+            + record.ages35to39
+            + record.ages40to44
+            + record.ages45to49
+            + record.ages50to54
+            + record.ages55to59
+            + record.ages60to64
+            + record.ages65to69
+            + record.ages70to74
+            + record.ages75to79
+            + record.ages80to84
+            + record.ages85plus
+        )
+    except:
+        return 0
 
 
 # need to be revised
 def get_Practices(request):
     # Get parameters in URL
-    page = int(request.GET.get("page", 1))
+    page = safe_int(request.GET.get("page"), 1)
     keyword = request.GET.get("keyword", "")
     address = request.GET.get("address", "")
     postcode = request.GET.get("postcode", "")
-    pagesize = int(request.GET.get("pagesize", 5))
+    pagesize = safe_int(request.GET.get("pagesize"), 5)
 
     # Query all practices
     practices = GPPractices.objects.all()
@@ -98,6 +138,7 @@ def get_Practices(request):
     total_doctor_num = doctors.count()
     populations = GPPopulations.objects.all()
 
+    # Build the context passed to the dashboard template.
     context = {
         "practices": [],
         "total_practice_num": get_total_practice(),
@@ -116,6 +157,7 @@ def get_Practices(request):
     for p in practices:
         Practice = PracticeData(p)
 
+        # Collect all doctors linked to the current practice.
         doctors_list = []
         details = GPDetails.objects.filter(practice=p)
         for detail in details:
@@ -124,51 +166,14 @@ def get_Practices(request):
         Practice.doctors = doctors_list
         Practice.doctor_num = len(doctors_list)
 
-        female = populations.get(practice=p.practice_code, sex="Female")
-        male = populations.get(practice=p.practice_code, sex="Male")
-        female_population = (
-            female.ages00to04
-            + female.ages05to09
-            + female.ages10to14
-            + female.ages15to19
-            + female.ages20to24
-            + female.ages25to29
-            + female.ages30to34
-            + female.ages35to39
-            + female.ages40to44
-            + female.ages45to49
-            + female.ages50to54
-            + female.ages55to59
-            + female.ages60to64
-            + female.ages65to69
-            + female.ages70to74
-            + female.ages75to79
-            + female.ages80to84
-            + female.ages85plus
+        Practice.male_patient_num = get_Populations(
+            populations, p.practice_code, sex="Male"
         )
-        male_population = (
-            male.ages00to04
-            + male.ages05to09
-            + male.ages10to14
-            + male.ages15to19
-            + male.ages20to24
-            + male.ages25to29
-            + male.ages30to34
-            + male.ages35to39
-            + male.ages40to44
-            + male.ages45to49
-            + male.ages50to54
-            + male.ages55to59
-            + male.ages60to64
-            + male.ages65to69
-            + male.ages70to74
-            + male.ages75to79
-            + male.ages80to84
-            + male.ages85plus
+        Practice.female_patient_num = get_Populations(
+            populations, p.practice_code, sex="Female"
         )
-        Practice.male_patient_num = male_population
-        Practice.female_patient_num = female_population
         try:
+            # Guard against division by zero when a practice has no assigned doctors.
             Practice.patient_gp_ratio = round(p.list_size / Practice.doctor_num, 1)
         except:
             Practice.patient_gp_ratio = None
@@ -183,6 +188,7 @@ def get_Practices(request):
         pagesize=pagesize,
     )
 
+    # Reuse the shared map helper so the template receives marker data in the same format as the map app.
     map_practices = getPracticeMarkers(context)
     context["map_practices"] = map_practices
     context["health_board_data"] = getHealthBoardData(practices)
@@ -190,11 +196,8 @@ def get_Practices(request):
     return render(request, "table/dashboard.html", context)
 
 
-def to_practices_table(request):
-    return redirect("/tables/practices")
-
-
 def getHealthBoardData(practices):
+    # Count how many practices belong to each health board.
     health_board = {}
 
     for p in practices:
@@ -203,11 +206,17 @@ def getHealthBoardData(practices):
         else:
             health_board[p.health_board] = 1
 
+    # Sort by frequency and keep only the top eight for the chart.
     sorted_health_board = sorted(
         health_board.items(), key=lambda item: item[1], reverse=True
     )[:8]
 
+    # Return the exact structure expected by the dashboard JavaScript.
     return {
         "labels": [item[0] for item in sorted_health_board],
         "data": [item[1] for item in sorted_health_board],
     }
+
+
+def to_practices_table(request):
+    return redirect("/tables/practices")

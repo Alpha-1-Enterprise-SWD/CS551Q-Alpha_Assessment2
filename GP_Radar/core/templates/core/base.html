@@ -88,137 +88,35 @@
       {% block content %}{% endblock %}
     </main>
     <!-- Footer -->
-    <footer class="bg-gradient-dark text-white py-5 mt-5">
+    <footer class="py-4 mt-5">
       <div class="container">
         <div class="row">
-          <!-- Brand Section -->
-          <div class="col-lg-4 mb-4">
-            <div class="d-flex align-items-start mb-3">
-              <div class="bg-primary rounded-circle p-2 me-3">
-                <i class="fas fa-hospital fa-lg"></i>
-              </div>
-              <div>
-                <h5 class="text-uppercase fw-bold mb-1">GP Radar</h5>
-                <p class="small text-info mb-0">Healthcare Analytics Platform</p>
-              </div>
-            </div>
-            <p class="text-light opacity-75">
-              Comprehensive healthcare analytics providing actionable insights into GP practice performance, 
-              patient demographics, and healthcare service delivery across Scotland.
-            </p>
-            <div class="d-flex gap-2 mt-3">
-              <a href="#" class="btn btn-outline-light btn-sm rounded-circle" title="GitHub">
-                <i class="fab fa-github"></i>
-              </a>
-              <a href="#" class="btn btn-outline-light btn-sm rounded-circle" title="LinkedIn">
-                <i class="fab fa-linkedin"></i>
-              </a>
-              <a href="#" class="btn btn-outline-light btn-sm rounded-circle" title="Website">
-                <i class="fas fa-globe"></i>
-              </a>
-            </div>
-          </div>
-          
-          <!-- Quick Links -->
-          <div class="col-lg-2 mb-4">
-            <h6 class="text-uppercase fw-bold mb-3 text-primary">Quick Links</h6>
-            <ul class="list-unstyled">
-              <li class="mb-2">
-                <a href="{% url 'table_practices' %}" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#analytics" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-chart-line me-2"></i>Analytics
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#maps" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-map me-2"></i>Maps
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#reports" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-file-alt me-2"></i>Reports
-                </a>
-              </li>
-            </ul>
-          </div>
-          
-          <!-- Resources -->
-          <div class="col-lg-3 mb-4">
-            <h6 class="text-uppercase fw-bold mb-3 text-primary">Resources</h6>
-            <ul class="list-unstyled">
-              <li class="mb-2">
-                <a href="/admin/" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-cog me-2"></i>Admin Panel
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-book me-2"></i>Documentation
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-code me-2"></i>API Reference
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="text-light opacity-75 text-decoration-none hover-light">
-                  <i class="fas fa-life-ring me-2"></i>Support
-                </a>
-              </li>
-            </ul>
-          </div>
-          
-          <!-- Project Info -->
-          <div class="col-lg-3 mb-4">
-            <h6 class="text-uppercase fw-bold mb-3 text-primary">Project Details</h6>
-            <div class="bg-dark bg-opacity-50 rounded p-3 mb-3">
-              <div class="small mb-2">
-                <span class="text-info fw-bold">Institution:</span><br>
-                University of Aberdeen
-              </div>
-              <div class="small mb-2">
-                <span class="text-info fw-bold">Module:</span><br>
-                CS551Q - Enterprise Software Development
-              </div>
-              <div class="small mb-2">
-                <span class="text-info fw-bold">Academic Year:</span><br>
-                2025-2026
-              </div>
-              <div class="small mb-0">
-                <span class="text-info fw-bold">Data Source:</span><br>
-                NHS Scotland GP Practice Data
-              </div>
-            </div>
-            <div class="badge bg-info text-wrap">
-              <i class="fas fa-database me-1"></i>Last Updated: January 2026
-            </div>
-          </div>
-        </div>
-        
-        <!-- Bottom Bar -->
-        <hr class="border-secondary opacity-50" />
-        <div class="row align-items-center">
           <div class="col-md-6">
-            <div class="d-flex align-items-center">
-              <span class="badge bg-success me-2">
-                <i class="fas fa-check-circle me-1"></i>Live
-              </span>
-              <small class="text-light opacity-75">
-                &copy; 2026 GP Radar. All rights reserved.
-              </small>
-            </div>
+            <h5>GP Radar</h5>
+            <p>
+              Healthcare analytics platform for GP practice insights and patient
+              demographics.
+            </p>
           </div>
           <div class="col-md-6 text-md-end">
-            <small class="text-light opacity-75">
-              <i class="fas fa-code me-1"></i>
-              Developed for CS551Q - Enterprise Software Development
-            </small>
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="text-muted">Documentation</a>
+              </li>
+              <li>
+                <a href="#" class="text-muted">API Reference</a>
+              </li>
+              <li>
+                <a href="#" class="text-muted">Support</a>
+              </li>
+            </ul>
           </div>
+        </div>
+        <hr />
+        <div class="text-center">
+          <small>&copy; 2026 GP Radar. University of Aberdeen - Enterprise Software
+          Development.</small>
         </div>
       </div>
     </footer>

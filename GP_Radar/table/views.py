@@ -189,3 +189,23 @@ def get_Practices(request):
 
 def to_practices_table(request):
     return redirect("/tables/practices")
+
+
+def getHealthBoardData(practices):
+    healthBoards = {}
+    for p in practices:
+        try:
+            # healthBoards.get(p.health_board)
+            healthBoards[p.health_board] += 1
+        except:
+            healthBoards[p.health_board] = 0
+
+    print("before sorting")
+    for k, v in 
+
+    sorted_healthBoards = dict(
+        sorted(healthBoards.items(), key=lambda item: item[1], reverse=True)
+    )[:8]
+
+
+    pass

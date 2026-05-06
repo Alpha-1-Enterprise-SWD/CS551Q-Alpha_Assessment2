@@ -442,20 +442,20 @@
   </div>
   <!-- Map and chart -->
   <div class="row mt-4">
-    {% include "map/_map.html" %}
     <div class="col-md-6">
-      <!-- Practice Locations Map -->
+      <!-- Health Board Distribution -->
       <div class="card">
         <div class="card-header">
           <h5 class="mb-0">
-            <i class="fas fa-map me-2"></i>Practice Locations
+            <i class="fas fa-chart-pie me-2"></i>Health Board Distribution
           </h5>
         </div>
-        <div class="card-body p-0">
-          <div id="map" style="height: 300px"></div>
+        <div class="card-body">
+          <canvas id="healthBoardChart" height="300"></canvas>
         </div>
       </div>
     </div>
+    {% include "map/_map.html" %}
   </div>
 {% endblock %}
 {% block scripts %}

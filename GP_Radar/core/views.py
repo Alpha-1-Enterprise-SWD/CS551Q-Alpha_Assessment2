@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
-from catalog.models import GPPractices, GPDetails, GPPopulations, GPPractitioners
+from django.http import Http404
+from catalog.models import GPPractices, GPDetails, GPPopulations
 
 # Create your views here.
 

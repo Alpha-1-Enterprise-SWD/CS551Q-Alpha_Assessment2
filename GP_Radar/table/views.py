@@ -109,6 +109,8 @@ def get_Practices(request):
         "page_range": range(1, (total_page_num + 1)),
         "begin_index": begin + 1,
         "end_index": end,
+        "map_practices": None,
+        "heath_board_data": None,
     }
 
     for p in practices:
@@ -183,6 +185,7 @@ def get_Practices(request):
 
     map_practices = getPracticeMarkers(context)
     context["map_practices"] = map_practices
+    context["heath_board_data"] = getHealthBoardData(practices)
 
     return render(request, "table/dashboard.html", context)
 
@@ -192,20 +195,16 @@ def to_practices_table(request):
 
 
 def getHealthBoardData(practices):
-    healthBoards = {}
+    healthBoard = {}
+
     for p in practices:
         try:
-            # healthBoards.get(p.health_board)
-            healthBoards[p.health_board] += 1
+            healthBoard[p.health_board] += 1
         except:
-            healthBoards[p.health_board] = 0
+            healthBoard[p.health_board] = 0
 
-    print("before sorting")
-    for k, v in 
-
-    sorted_healthBoards = dict(
-        sorted(healthBoards.items(), key=lambda item: item[1], reverse=True)
+    sorted_healthBoard = sorted(
+        healthBoard.items(), key=lambda item: item[1], reverse=True
     )[:8]
 
-
-    pass
+    return sorted_healthBoard

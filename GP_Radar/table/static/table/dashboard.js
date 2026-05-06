@@ -309,6 +309,12 @@ function loadSizeChart() {
 
 // Get health board data from the current page
 function getHealthBoardData() {
+    // return JSON.parse(
+    //     document.getElementById("health-board-data").textContent);
+
+
+
+
     const healthBoards = {};
     const rows = document.querySelectorAll('#tableView tbody tr');
 

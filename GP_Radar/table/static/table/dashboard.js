@@ -142,8 +142,10 @@ function loadHealthBoardChart() {
     const ctx = document.getElementById('healthBoardChart');
     if (!ctx) return;
 
-    // Get health board data from the page
-    const healthBoardData = getHealthBoardData();
+    const dataElement = document.getElementById("health-board-data");
+    if (!dataElement) return;
+
+    const healthBoardData = JSON.parse(dataElement.textContent);
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -307,35 +309,6 @@ function loadSizeChart() {
     });
 }
 
-// Get health board data from the current page
-function getHealthBoardData() {
-    // return JSON.parse(
-    //     document.getElementById("health-board-data").textContent);
-
-
-
-
-    const healthBoards = {};
-    const rows = document.querySelectorAll('#tableView tbody tr');
-
-    rows.forEach(row => {
-        const badge = row.querySelector('.badge');
-        if (badge) {
-            const boardName = badge.textContent.trim();
-            healthBoards[boardName] = (healthBoards[boardName] || 0) + 1;
-        }
-    });
-
-    // Limit to top 8 boards for better visualization
-    const sortedBoards = Object.entries(healthBoards)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8);
-
-    return {
-        labels: sortedBoards.map(([name]) => name),
-        data: sortedBoards.map(([, count]) => count)
-    };
-}
 
 // Get patient to GP ratio data
 function getRatioData() {

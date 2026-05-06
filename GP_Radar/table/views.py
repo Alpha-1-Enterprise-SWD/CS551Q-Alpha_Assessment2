@@ -110,7 +110,7 @@ def get_Practices(request):
         "begin_index": begin + 1,
         "end_index": end,
         "map_practices": None,
-        "heath_board_data": None,
+        "health_board_data": None,
     }
 
     for p in practices:
@@ -185,7 +185,7 @@ def get_Practices(request):
 
     map_practices = getPracticeMarkers(context)
     context["map_practices"] = map_practices
-    context["heath_board_data"] = getHealthBoardData(practices)
+    context["health_board_data"] = getHealthBoardData(practices)
 
     return render(request, "table/dashboard.html", context)
 
@@ -195,16 +195,19 @@ def to_practices_table(request):
 
 
 def getHealthBoardData(practices):
-    healthBoard = {}
+    health_board = {}
 
     for p in practices:
-        try:
-            healthBoard[p.health_board] += 1
-        except:
-            healthBoard[p.health_board] = 0
+        if p.health_board in health_board:
+            health_board[p.health_board] += 1
+        else:
+            health_board[p.health_board] = 1
 
-    sorted_healthBoard = sorted(
-        healthBoard.items(), key=lambda item: item[1], reverse=True
+    sorted_health_board = sorted(
+        health_board.items(), key=lambda item: item[1], reverse=True
     )[:8]
 
-    return sorted_healthBoard
+    return {
+        "labels": [item[0] for item in sorted_health_board],
+        "data": [item[1] for item in sorted_health_board],
+    }

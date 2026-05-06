@@ -3,23 +3,7 @@ import os
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from catalog.models import GPPractices, GPPractitioners, GPDetails, GPPopulations
-
-HB_LOOKUP = {
-    'S08000015': 'NHS Ayrshire and Arran',
-    'S08000016': 'NHS Borders',
-    'S08000017': 'NHS Dumfries and Galloway',
-    'S08000019': 'NHS Forth Valley',
-    'S08000020': 'NHS Grampian',
-    'S08000022': 'NHS Highland',
-    'S08000024': 'NHS Lothian',
-    'S08000025': 'NHS Orkney',
-    'S08000026': 'NHS Shetland',
-    'S08000028': 'NHS Western Isles',
-    'S08000029': 'NHS Fife',
-    'S08000030': 'NHS Tayside',
-    'S08000031': 'NHS Greater Glasgow and Clyde',
-    'S08000032': 'NHS Lanarkshire',
-}
+from catalog.utils import HB_LOOKUP, get_coordinates
 
 class Command(BaseCommand):
     help = 'Import GP data from CSV files'
@@ -93,6 +77,8 @@ class Command(BaseCommand):
                     if row.get('AddressLine3'):
                         address_parts.append(row['AddressLine3'])
                     address = ', '.join(address_parts)
+
+                    lat, lon = get_coordinates(address, row.get('Postcode', ''))
                     
                     GPPractices.objects.update_or_create(
                         practice_code=row.get('PracticeCode', ''),
@@ -103,10 +89,11 @@ class Command(BaseCommand):
                             'postcode': row.get('Postcode', ''),
                             'telephone': row.get('TelephoneNumber', ''),
                             'health_board': HB_LOOKUP.get(row.get('HB', ''), row.get('HB', '')),
+                            'latitude': lat,
+                            'longitude': lon,
                         }
                     )
                     
-                
                     # for p in GPPractices.objects.all():
                     #     print(f'{p.practice_code} | {p.name[:30]} | {p.postcode} | {p.list_size} | {p.address}')
         

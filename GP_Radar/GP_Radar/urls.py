@@ -23,7 +23,7 @@ urlpatterns = [
     path("", include("table.urls")),
     path("tables/", include("table.urls")),
     path("practices/", include("core.urls")),
-    # path("api/", include("core.urls")),
+    path("api/", include("table.urls")),
     # path("maps/", include("map.urls")),
     # path("charts/", include("chart.urls")),
 ]

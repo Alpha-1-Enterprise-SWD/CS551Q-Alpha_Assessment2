@@ -338,7 +338,7 @@
                               </button>
                             {% endif %}
                             <button class="btn btn-info btn-sm mb-1"
-                                    onclick="showOnMap({{ item.practice.latitude|default:'null' }}, {{ item.practice.longitude|default:'null' }})"
+                                    onclick="showOnMap('{{ item.practice.latitude|default:'null' }}', '{{ item.practice.longitude|default:'null' }}')"
                                     title="Show on Map">
                               <i class="fas fa-map-marker-alt me-1"></i>Map
                             </button>
@@ -487,7 +487,7 @@
   <div class="row mt-4">
     <div class="col-md-6">
       <!-- Health Board Distribution -->
-      <div class="card">
+      <div class="card" id="health-board-distribution">
         <div class="card-header">
           <h5 class="mb-0">
             <i class="fas fa-chart-pie me-2"></i>Health Board Distribution
@@ -500,7 +500,7 @@
     </div>
     <div class="col-md-6">
       <!-- Practice Locations Map -->
-      <div class="card">
+      <div class="card" id="practice-location">
         <div class="card-header">
           <h5 class="mb-0">
             <i class="fas fa-map me-2"></i>Practice Locations
@@ -624,5 +624,48 @@
       `;
     });
   }
+  </script>
+
+  <!-- Smooth Scrolling Script -->
+  <script>
+    // Smooth scrolling for navigation links
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all smooth scroll links
+      const smoothScrollLinks = document.querySelectorAll('.smooth-scroll');
+      
+      smoothScrollLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Get the target element based on link text
+          let targetId;
+          if (this.textContent.includes('Analytics')) {
+            targetId = '#health-board-distribution';
+          } else if (this.textContent.includes('Maps')) {
+            targetId = '#practice-location';
+          } else {
+            targetId = this.getAttribute('href');
+          }
+          
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            // Calculate the offset (accounting for navbar height)
+            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            const targetPosition = targetElement.offsetTop - navbarHeight - 20;
+            
+            // Smooth scroll to target
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+            
+            // Update active state
+            smoothScrollLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+          }
+        });
+      });
+    });
   </script>
 {% endblock %}

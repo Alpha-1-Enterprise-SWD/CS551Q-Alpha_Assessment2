@@ -44,6 +44,108 @@ footer hr {
   border-color: rgba(255, 255, 255, 0.35);
 }
 
+<<<<<<< HEAD
+/* Footer hover effects */
+.hover-light {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.hover-light:hover {
+  color: #fff !important;
+  transform: translateX(5px);
+}
+
+.hover-light::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #0d6efd;
+  transition: width 0.3s ease;
+}
+
+.hover-light:hover::after {
+  width: 100%;
+}
+
+/* Footer brand icon */
+footer .bg-primary.rounded-circle {
+  background: linear-gradient(135deg, #0d6efd, #0056b3) !important;
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Footer buttons */
+footer .btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+footer .btn-outline-light:hover {
+  border-color: #0d6efd;
+  color: #fff;
+  background: rgba(13, 110, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+}
+
+/* Footer badges */
+footer .badge {
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  background: rgba(13, 110, 253, 0.2);
+  border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+/* Footer info card */
+footer .bg-dark.bg-opacity-50 {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Footer status badge */
+footer .badge.bg-success {
+  background: linear-gradient(135deg, #198754, #146c43) !important;
+  border: 1px solid rgba(25, 135, 84, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(25, 135, 84, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+}
+
+/* Apply Filter Button */
+.apply-filter-btn {
+  background: linear-gradient(135deg, #0d6efd, #0056b3) !important;
+  border: 2px solid #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+}
+
+.apply-filter-btn:hover {
+  background: linear-gradient(135deg, #0b5ed7, #004085) !important;
+  border-color: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+}
+
+.apply-filter-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(13, 110, 253, 0.3);
+}
+
+=======
+>>>>>>> 4bc3200c1ea0f1bb409890f05d392fe5c67c6cdc
 /* Cards */
 .card {
   border: 1px solid #e2e8f0;

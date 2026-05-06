@@ -42,9 +42,9 @@ This application utilizes official healthcare data from Public Health Scotland:
 
 | Dataset | Description | Location |
 |---------|-------------|----------|
-| **GP Practices and List Sizes** | Practice contact details and patient list sizes (January 2026) | `/data/gp-practices-list-sizes.json` |
-| **GP Details** | General practitioner contact information (January 2026) | `/data/gp-details.json` |
-| **GP Practice Populations** | Demographic breakdown by practice (January 2026) | `/data/gp-practice-populations.json` |
+| **GP Practices and List Sizes** | Practice contact details and patient list sizes (January 2026) | `/data/gp-practices-list-sizes.csv` |
+| **GP Details** | General practitioner contact information (January 2026) | `/data/gp-details.csv` |
+| **GP Practice Populations** | Demographic breakdown by practice (January 2026) | `/data/gp-practice-populations.csv` |
 
 ### Data Source Links
 
@@ -89,7 +89,7 @@ This application utilizes official healthcare data from Public Health Scotland:
 
 5. **Load initial data**
    ```bash
-   python manage.py loaddata data/initial_data.json
+   python manage.py import_data --data-path data --clear
    ```
 
 6. **Run the development server**
@@ -103,30 +103,75 @@ This application utilizes official healthcare data from Public Health Scotland:
 ## 📁 Project Structure
 
 ```
-GP-Radar/
-├── gp_radar/              # Main Django application
-│   ├── settings/          # Application settings
-│   ├── urls.py           # URL routing
-│   └── views.py          # View logic
+GP_Radar/
+├── GP_Radar/              # Main Django project configuration
+│   ├── __init__.py
+│   ├── settings.py        # Django settings
+│   ├── urls.py           # Main URL routing
+│   ├── wsgi.py           # WSGI configuration
+│   └── asgi.py           # ASGI configuration
+├── apps/                 # Django applications
+│   ├── catalog/           # Catalog management app
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── management/
+│   │   │   └── commands/
+│   │   └── migrations/
+│   ├── core/              # Core functionality app
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── templates/
+│   │   │   └── core/
+│   │   │       └── base.html
+│   │   ├── static/
+│   │   │   └── core/
+│   │   │       └── custom.css
+│   │   └── migrations/
+│   ├── table/             # Table/dashboard app
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── templates/
+│   │   │   └── table/
+│   │   │       └── dashboard.html
+│   │   ├── static/
+│   │   │   └── table/
+│   │   │       └── dashboard.js
+│   │   └── migrations/
+│   └── map/               # Map functionality app
+│       ├── __init__.py
+│       ├── admin.py
+│       ├── apps.py
+│       ├── models.py
+│       ├── views.py
+│       ├── urls.py
+│       └── migrations/
 ├── data/                 # Raw and processed datasets
-├── static/               # CSS, JavaScript, images
-├── templates/            # HTML templates
-├── requirements.txt      # Python dependencies
+│   ├── GPDetails.csv
+│   ├── GPPopulations.csv
+│   └── GPPractices.csv
+├── tests/                # Test files
+├── static/               # Global static files
+├── templates/            # Global templates
+├── .env                  # Environment variables
+├── .gitignore           # Git ignore file
+├── db.sqlite3           # SQLite database (development)
 ├── manage.py            # Django management script
+├── requirements.txt      # Python dependencies
 └── README.md            # This file
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-DEBUG=True
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///db.sqlite3
-```
 
 ## 📈 Usage
 

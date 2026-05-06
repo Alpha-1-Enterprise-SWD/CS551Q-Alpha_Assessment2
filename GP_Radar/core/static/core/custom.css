@@ -26,17 +26,13 @@ body {
 }
 
 /* Footer */
-footer {
-  background-color: #0d6efd;
-  color: #fff;
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%) !important;
 }
 
 footer h5,
 footer p,
-footer small,
-footer .text-muted,
-footer a {
-  color: #fff;
+footer small {
   padding: 0.25rem 0;
 }
 
@@ -44,7 +40,6 @@ footer hr {
   border-color: rgba(255, 255, 255, 0.35);
 }
 
-<<<<<<< HEAD
 /* Footer hover effects */
 .hover-light {
   transition: all 0.3s ease;
@@ -117,7 +112,7 @@ footer .badge.bg-success {
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
+  0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
   70% { box-shadow: 0 0 0 10px rgba(25, 135, 84, 0); }
   100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
 }
@@ -144,8 +139,6 @@ footer .badge.bg-success {
   box-shadow: 0 1px 4px rgba(13, 110, 253, 0.3);
 }
 
-=======
->>>>>>> 4bc3200c1ea0f1bb409890f05d392fe5c67c6cdc
 /* Cards */
 .card {
   border: 1px solid #e2e8f0;

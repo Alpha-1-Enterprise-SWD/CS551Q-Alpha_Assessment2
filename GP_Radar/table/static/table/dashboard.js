@@ -424,45 +424,14 @@ function addPracticeMarkers() {
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
 
-    // Get practice data from the table
-    const rows = document.querySelectorAll('#tableView tbody tr');
+    const dataElement = document.getElementById("map-practices-data");
+    if (!dataElement) return;
 
-    rows.forEach((row, index) => {
-        const practiceName = row.querySelector('strong').textContent;
-        const address = row.querySelector('.text-muted').textContent;
-        const patientCount = row.cells[2].textContent.trim();
-        const gpCount = row.cells[3].textContent.trim();
-        const ratio = row.cells[4].textContent.trim();
+    const practices = JSON.parse(dataElement.textContent);
 
-        // Create popup content
-        const popupContent = `
-            <div style="min-width: 200px;">
-                <h6>${practiceName}</h6>
-                <p class="mb-1"><small>${address}</small></p>
-                <div class="row text-center">
-                    <div class="col-4">
-                        <strong>${patientCount}</strong><br>
-                        <small>Patients</small>
-                    </div>
-                    <div class="col-4">
-                        <strong>${gpCount}</strong><br>
-                        <small>GPs</small>
-                    </div>
-                    <div class="col-4">
-                        <strong>${ratio}</strong><br>
-                        <small>Ratio</small>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Create marker (using approximate coordinates for demonstration)
-        // In a real implementation, you'd use actual latitude/longitude from the database
-        const lat = 56.4907 + (Math.random() - 0.5) * 2;
-        const lng = -4.2026 + (Math.random() - 0.5) * 4;
-
-        const marker = L.marker([lat, lng])
-            .bindPopup(popupContent)
+    practices.forEach(practice => {
+        const marker = L.marker([practice.latitude, practice.longitude])
+            .bindPopup(practice.popup_html)
             .addTo(map);
 
         markers.push(marker);

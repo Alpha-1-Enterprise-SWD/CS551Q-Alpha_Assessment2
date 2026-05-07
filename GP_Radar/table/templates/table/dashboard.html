@@ -526,5 +526,137 @@
       document.getElementById("postcodeSearchForm").submit();
     }
   }
+<<<<<<< Updated upstream
+=======
+
+  function applyFilters() {
+    const patientSizeFilter = document.getElementById("patientSizeFilter");
+    const healthBoardFilter = document.getElementById("healthBoardFilter");
+    const patientRatioFilter = document.getElementById("patientRatioFilter");
+    
+    // Get current URL parameters
+    const currentParams = new URLSearchParams(window.location.search);
+    
+    // Update filter parameters
+    if (patientSizeFilter && patientSizeFilter.value) {
+      currentParams.set('patient_size', patientSizeFilter.value);
+    } else {
+      currentParams.delete('patient_size');
+    }
+    
+    if (healthBoardFilter && healthBoardFilter.value) {
+      currentParams.set('health_board', healthBoardFilter.value);
+    } else {
+      currentParams.delete('health_board');
+    }
+    
+    if (patientRatioFilter && patientRatioFilter.value) {
+      currentParams.set('patient_ratio', patientRatioFilter.value);
+    } else {
+      currentParams.delete('patient_ratio');
+    }
+    
+    // Show loading state
+    const applyBtn = document.querySelector('.apply-filter-btn');
+    const originalText = applyBtn.innerHTML;
+    applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Applying...';
+    applyBtn.disabled = true;
+    
+    // Redirect to filtered page - Django will render filtered results
+    // const newUrl = window.location.pathname + '?' + currentParams.toString();
+    const newUrl = "/tables/practices/filters" + '?' + currentParams.toString();
+
+    console.log('Redirecting to:', newUrl);
+    
+    window.location.href = newUrl;
+  }
+
+  function updatePracticesTable(practices) {
+    const tableBody = document.querySelector('#practicesTable tbody');
+    if (!tableBody) return;
+    
+    // Clear existing table rows
+    tableBody.innerHTML = '';
+    
+    if (practices.length === 0) {
+      // Show no results message
+      const row = tableBody.insertRow();
+      const cell = row.insertCell();
+      cell.colSpan = 8;
+      cell.className = 'text-center py-4';
+      cell.innerHTML = '<div class="alert alert-info mb-0"><i class="fas fa-info-circle me-2"></i>No practices found matching your filter criteria.</div>';
+      return;
+    }
+    
+    // Add filtered practices to table
+    practices.forEach(practice => {
+      const row = tableBody.insertRow();
+      row.innerHTML = `
+        <td>${practice.name || 'N/A'}</td>
+        <td>${practice.address || 'N/A'}</td>
+        <td>${practice.postcode || 'N/A'}</td>
+        <td>${practice.health_board || 'N/A'}</td>
+        <td>${practice.list_size || 0}</td>
+        <td>${practice.doctor_count || 0}</td>
+        <td>${practice.patient_gp_ratio || 'N/A'}</td>
+        <td>
+          <div class="d-flex gap-1">
+            <button class='btn btn-info btn-sm mb-1'
+                    onclick='showOnMap(${practice.latitude || null}, ${practice.longitude || null})'
+                    title="Show on Map">
+              <i class="fas fa-map-marker-alt"></i>
+            </button>
+            <a href="/practices/${practice.practice_code}" class="btn btn-primary btn-sm mb-1" title="View Details">
+              <i class="fas fa-eye"></i>
+            </a>
+          </div>
+        </td>
+      `;
+    });
+  }
+  </script>
+
+  <!-- Smooth Scrolling Script -->
+  <script>
+    // Smooth scrolling for navigation links
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all smooth scroll links
+      const smoothScrollLinks = document.querySelectorAll('.smooth-scroll');
+      
+      smoothScrollLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Get the target element based on link text
+          let targetId;
+          if (this.textContent.includes('Analytics')) {
+            targetId = '#health-board-distribution';
+          } else if (this.textContent.includes('Maps')) {
+            targetId = '#practice-location';
+          } else {
+            targetId = this.getAttribute('href');
+          }
+          
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            // Calculate the offset (accounting for navbar height)
+            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            const targetPosition = targetElement.offsetTop - navbarHeight - 20;
+            
+            // Smooth scroll to target
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+            
+            // Update active state
+            smoothScrollLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+          }
+        });
+      });
+    });
+>>>>>>> Stashed changes
   </script>
 {% endblock %}

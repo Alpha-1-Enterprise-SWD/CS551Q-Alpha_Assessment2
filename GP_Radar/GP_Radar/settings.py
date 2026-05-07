@@ -27,7 +27,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True    
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -80,7 +80,6 @@ WSGI_APPLICATION = "GP_Radar.wsgi.application"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ.get("DB_NAME"),

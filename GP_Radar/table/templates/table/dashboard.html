@@ -338,7 +338,7 @@
                               </button>
                             {% endif %}
                             <button class="btn btn-info btn-sm mb-1"
-                                    onclick="showOnMap('{{ item.practice.latitude|default:'null' }}', '{{ item.practice.longitude|default:'null' }}')"
+                                    onclick="showOnMap({{ item.practice.latitude|default:'null' }}, {{ item.practice.longitude|default:'null' }})"
                                     title="Show on Map">
                               <i class="fas fa-map-marker-alt me-1"></i>Map
                             </button>
@@ -614,7 +614,7 @@
         <td>
           <div class="d-flex gap-1">
             <button class='btn btn-info btn-sm mb-1'
-                    onclick='showOnMap("${practice.latitude || 'null'}", "${practice.longitude || 'null'}")'
+                    onclick='showOnMap(${practice.latitude || null}, ${practice.longitude || null})'
                     title="Show on Map">
               <i class="fas fa-map-marker-alt"></i>
             </button>

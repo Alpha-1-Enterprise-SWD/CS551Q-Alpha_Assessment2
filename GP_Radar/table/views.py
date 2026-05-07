@@ -532,6 +532,11 @@ def apply_filters_api(request):
 
                 context["practices"].append(Practice)
 
+            # Add map markers and health board data for template
+            map_practices = getPracticeMarkers(context)
+            context["map_practices"] = map_practices
+            context["health_board_data"] = getHealthBoardData(practices)
+
             return render(request, "table/dashboard.html", context)
 
         except Exception as e:
@@ -578,6 +583,8 @@ def apply_filters_api(request):
                         "NHS Greater Glasgow and Clyde",
                         "NHS Lanarkshire",
                     ],
+                    "map_practices": [],
+                    "health_board_data": None,
                     "error_message": (
                         f"Error applying filters: {str(e)}"
                         if str(e)
@@ -625,6 +632,8 @@ def apply_filters_api(request):
                 "NHS Greater Glasgow and Clyde",
                 "NHS Lanarkshire",
             ],
+            "map_practices": [],
+            "health_board_data": None,
         },
     )
 

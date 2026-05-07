@@ -1,6 +1,4 @@
 from django.template.loader import render_to_string
-import random
-from map.get_coordinations import get_coordinates
 
 # Create your views here.
 
@@ -10,25 +8,18 @@ def getPracticeMarkers(context):
     map_practices = []
 
     for p in context["practices"]:
-        practiceName = p.practice.name
-        address = p.practice.address
-        patientCount = p.practice.list_size
-        gpCount = p.doctor_num
-        ratio = p.patient_gp_ratio
-        coords = get_coordinates(address, p.practice.postcode)
-        if coords:
-            longitude, latitude = coords
-            p.practice.longitude = longitude
-            p.practice.latitude = latitude
-        else:
-            longitude = None
-            latitude = None
+        # Use coordinates already stored in database
+        latitude = p.practice.latitude
+        longitude = p.practice.longitude
 
-        # longitude = 56.4907 + (random.random() - 0.5) * 2
-        # latitude = -4.2026 + (random.random() - 0.5) * 4
-
-        popup_html = ""
+        # Only add markers with valid coordinates
         if longitude and latitude:
+            practiceName = p.practice.name
+            address = p.practice.address
+            patientCount = p.practice.list_size
+            gpCount = p.doctor_num
+            ratio = p.patient_gp_ratio
+
             popup_html = render_to_string(
                 "map/_practice_popup.html",
                 {
@@ -39,8 +30,8 @@ def getPracticeMarkers(context):
                     "ratio": ratio,
                 },
             )
-        map_practices.append(
-            {"latitude": latitude, "longitude": longitude, "popup_html": popup_html}
-        )
+            map_practices.append(
+                {"latitude": latitude, "longitude": longitude, "popup_html": popup_html}
+            )
 
     return map_practices

@@ -161,7 +161,6 @@ def get_Practices(request):
                 max_ratio = float(max_ratio)
                 valid_ratio = True
             except ValueError:
-                print(f"Invalid ratio values: {min_ratio}, {max_ratio}")
                 valid_ratio = False
 
             if valid_ratio:
@@ -181,7 +180,6 @@ def get_Practices(request):
                 min_ratio = float(min_ratio)
                 valid_ratio = True
             except ValueError:
-                print(f"Invalid ratio value: {min_ratio}")
                 valid_ratio = False
 
             if valid_ratio:
@@ -339,13 +337,8 @@ def apply_filters_api(request):
             health_board = request.GET.get("health_board", "")
             patient_ratio = request.GET.get("patient_ratio", "")
 
-            print(
-                f"Filter Parameters - page: {page}, patient_size: {patient_size}, health_board: {health_board}, patient_ratio: {patient_ratio}"
-            )
-
             # Query all practices with optimization
             practices = GPPractices.objects.all()
-            print(f"Total practices before filtering: {practices.count()}")
 
             # Apply filters
             if keyword != None and keyword != "":
@@ -356,7 +349,6 @@ def apply_filters_api(request):
                 practices = practices.filter(postcode__icontains=postcode)
 
             if patient_size != "":
-                print(f"Applying patient size filter: {patient_size}")
                 if "-" in patient_size:
                     min_size, max_size = patient_size.split("-")
                     practices = practices.filter(
@@ -365,15 +357,13 @@ def apply_filters_api(request):
                 elif "+" in patient_size:
                     min_size = patient_size.replace("+", "")
                     practices = practices.filter(list_size__gte=min_size)
-                print(f"After patient size filter: {practices.count()}")
 
             if health_board != "":
-                print(f"Applying health board filter: {health_board}")
-                practices = practices.filter(health_board__icontains=health_board)
-                print(f"After health board filter: {practices.count()}")
+                kw = health_board
+                kw = kw.replace("NHS ", "")
+                practices = practices.filter(health_board__icontains=kw)
 
             if patient_ratio != "":
-                print(f"Applying patient ratio filter: {patient_ratio}")
                 if "-" in patient_ratio:
                     min_ratio, max_ratio = patient_ratio.split("-")
                     # Convert to float for comparison
@@ -382,7 +372,6 @@ def apply_filters_api(request):
                         max_ratio = float(max_ratio)
                         valid_ratio = True
                     except ValueError:
-                        print(f"Invalid ratio values: {min_ratio}, {max_ratio}")
                         valid_ratio = False
 
                     if valid_ratio:
@@ -403,7 +392,6 @@ def apply_filters_api(request):
                         min_ratio = float(min_ratio)
                         valid_ratio = True
                     except ValueError:
-                        print(f"Invalid ratio value: {min_ratio}")
                         valid_ratio = False
 
                     if valid_ratio:
@@ -417,7 +405,6 @@ def apply_filters_api(request):
                                 if ratio >= min_ratio:
                                     filtered_practices.append(practice)
                         practices = filtered_practices
-                print(f"After patient ratio filter: {len(practices)}")
 
             # Apply pagination
             total_practice_num = len(practices)
@@ -545,11 +532,9 @@ def apply_filters_api(request):
 
                 context["practices"].append(Practice)
 
-            print(f"Rendering filtered page with {len(context['practices'])} practices")
             return render(request, "table/dashboard.html", context)
 
         except Exception as e:
-            print(f"Filter Error: {str(e)}")
             import traceback
 
             traceback.print_exc()

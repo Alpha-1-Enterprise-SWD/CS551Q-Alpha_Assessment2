@@ -338,7 +338,7 @@
                               </button>
                             {% endif %}
                             <button class="btn btn-info btn-sm mb-1"
-                                    onclick="showOnMap('{{ item.practice.latitude|default:'null' }}', '{{ item.practice.longitude|default:'null' }}')"
+                                    onclick="showOnMap({{ item.practice.latitude|default:'null' }}, {{ item.practice.longitude|default:'null' }})"
                                     title="Show on Map">
                               <i class="fas fa-map-marker-alt me-1"></i>Map
                             </button>
@@ -483,7 +483,7 @@
       {% endif %}
     </div>
   </div>
-  <!-- Charts Section -->
+  <!-- Map and chart -->
   <div class="row mt-4">
     <div class="col-md-6">
       <!-- Health Board Distribution -->
@@ -495,6 +495,7 @@
         </div>
         <div class="card-body">
           <canvas id="healthBoardChart" height="300"></canvas>
+          {{ health_board_data|json_script:"health-board-data" }}
         </div>
       </div>
     </div>
@@ -508,6 +509,7 @@
         </div>
         <div class="card-body p-0">
           <div id="map" style="height: 300px"></div>
+          {{ map_practices|json_script:"map-practices-data" }}
         </div>
       </div>
     </div>
@@ -612,7 +614,7 @@
         <td>
           <div class="d-flex gap-1">
             <button class='btn btn-info btn-sm mb-1'
-                    onclick='showOnMap("${practice.latitude || 'null'}", "${practice.longitude || 'null'}")'
+                    onclick='showOnMap(${practice.latitude || null}, ${practice.longitude || null})'
                     title="Show on Map">
               <i class="fas fa-map-marker-alt"></i>
             </button>

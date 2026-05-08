@@ -90,6 +90,7 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT"),
     }
 }
+=======
 database_url = os.environ.get("DATABASE_URL")
 DATABASES["default"] = dj_database_url.parse(database_url)
 

@@ -13,12 +13,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-
-load_dotenv()
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -29,8 +30,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     "catalog",
     "table",
     "core",
+    "map",
     "django.contrib.humanize",
 ]
 
@@ -78,28 +80,21 @@ WSGI_APPLICATION = "GP_Radar.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-<<<<<<< Updated upstream
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT"),
     }
 }
 =======
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": os.environ.get("DB_NAME"),
-#         "USER": os.environ.get("DB_USER"),
-#         "PASSWORD": os.environ.get("DB_PASSWORD"),
-#         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
-#         "PORT": os.environ.get("DB_PORT", "3306"),
-#     }
-# }
+database_url = os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(database_url)
 
->>>>>>> Stashed changes
-
-
+# postgresql://mydatabase_bwk1_user:c7NIP7fukwpBiA6tvVJWYwvPLONE0RLx@dpg-d7uhtme7r5hc73b4jkcg-a/mydatabase_bwk1
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 

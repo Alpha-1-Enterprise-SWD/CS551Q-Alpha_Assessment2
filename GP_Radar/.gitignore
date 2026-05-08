@@ -17,7 +17,7 @@ Thumbs.db
 .vscode/
 
 # environment variables
-.env
+# .env
 
 # Database
 *.sqlite3

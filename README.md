@@ -6,7 +6,7 @@
 
 ## 📋 Overview
 
-GP Radar is a comprehensive Django web application designed to provide actionable insights into GP practice capacity and patient demographics across Scotland. The system analyzes patient-to-GP ratios to help healthcare administrators, policymakers, and researchers understand healthcare resource distribution and identify areas requiring attention.
+GP Radar is a comprehensive Django web application designed to provide actionable insights into GP practice capacity and patient demographics across Scotland. The system analyzes patient-to-GP ratios to help healthcare administrators, policymakers, and researchers understand healthcare resource distribution and identify areas requiring attention. It is deployed on Render on the following link: https://test-deployment-gqhq.onrender.com/.
 
 ## 🎯 Key Features
 
@@ -19,19 +19,51 @@ GP Radar is a comprehensive Django web application designed to provide actionabl
 ## 🏗️ Technical Architecture
 
 - **Backend**: Django 4.2+ with Python 3.8+
+<<<<<<< HEAD
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Database**: PostgreSQL (development: SQLite)
+=======
+- **Frontend**: HTML5, CSS3, JavaScript ES6+
+- **Database**: MySQL/PostgreSQL (production), SQLite (development)
+- **Mapping**: Leaflet.js with OpenStreetMap
+- **Charts**: Chart.js
+- **UI Framework**: Bootstrap 5.3
+- **Icons**: Font Awesome 6.4
+- **Data Processing**: Pandas for data analysis and manipulation
+>>>>>>> readme
 - **Visualization**: Chart.js for interactive charts
+
+## System Architecture
+
+### Backend Components
+- Django Models: GPPractices, GPPractitioners, GPDetails, GPPopulations
+- View Controllers: Filtering, pagination, and data processing
+- Error Handling: Comprehensive exception management
+- Security: Input validation and sanitisation
+
+### Database Design
+- Normalised schema for data integrity
+- Foreign key relationships for data consistency
+- Optimised indexing for performance
+- Migration system for schema evolution
 
 ## 👥 Development Team
 
 | Role | Team Members |
 |------|--------------|
+<<<<<<< HEAD
 | **Team Leaders** | Raoul, Faizan Khan |
 | **Data Lead** | Raoul, David |
 | **Frontend Lead** | Thomas, Enoch |
 | **Backend Lead** | Chia Chen, Faizan Khan |
 | **Quality Lead** | Faizan Khan |
+=======
+| **Team Leaders** | Raoul Amisial, Faizan Khan |
+| **Data team** | Raoul Amisial, Oluwaniyi Toyinbo |
+| **Frontend team** | Thomas McGuigan, Enoch Agbledzorwu |
+| **Backend team** | Chia Chen Wu, Enoch Agbledzorwu, Faizan Khan |
+| **Quality team** | Faizan Khan |
+>>>>>>> readme
 
 ## 📊 Data Sources
 
@@ -82,22 +114,84 @@ This application utilizes official healthcare data from Public Health Scotland:
    ```
 
 4. **Set up the database**
+   GP Radar supports two database options: **SQLite** (default, no setup required) and **MySQL** (recommend for full features including geocoding).
+
+   #### Option 1 - SQLite (quick start)
    ```bash
+   cd GP_Radar
    python manage.py migrate
+   python manage.py import_data
    ```
 
-5. **Load initial data**
+   #### Option 2 - MySQL
+
+   **Step 1 - Install MySQL Server**
+   Download and install from `https://dev.mysql.com/downloads/mysql/`. Keep the username as `root`and set a password you will remember. MySQL     
+   Workbench can be installed alongside it.
+
+   **Step 2 - Configure your environment**
+   Rename the variables in `.env` to match your database information
+
+   **Step 3 - Create the database**
    ```bash
-   python manage.py import_data --data-path data --clear
+   mysql -u root -p
    ```
 
-6. **Run the development server**
+   Then inside MySQL:
+   ```sql
+   CREATE DATABASE gp_radar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   EXIT;
+   ```
+
+   **Step 4 - Run migrations and load data**
+   ```
+   cd GP_Radar
+   python manage.py makemigrations catalog
+   python manage.py migrate
+   python manage.py import_data
+   ```
+
+   *NOTE:* As per Nominatim policy, the data loader enforces a 1-second delay per practice to comply with geocoding rate limits, so importing all   
+   880 GP Practices takes approximately 15 minutes to complete. Messages saying "Could not find coordinates for ..." are expected and indicate
+   practices where the address could not be identified, not failures in the import itself.
+
+   **Step 5 - Verify the data loaded correctly**
+   ```
+   bash
+   python manage.py shell
+   ```
+
+   ```
+   python
+   from catalog.models import GPPractices, GPPractitioners, GPDetails, GPPopulations
+   print("Practices:", GPPractices.objects.count())
+   print("Practitioners:", GPPractitioners.objects.count())
+   print("Details:", GPDetails.objects.count())
+   print("Populations:", GPPopulations.objects.count())
+   exit()
+   ```
+
+   Expected output:
+   ```
+   Practices: 880
+   Practitioners: 5367
+   Details: 5632
+   Populations: 1760
+   ```
+
+
+5. **Run the development server**
    ```bash
    python manage.py runserver
    ```
 
+<<<<<<< HEAD
 7. **Access the application**
    Open your browser and navigate to `https://gp-radar.onrender.com/api/practices`
+=======
+6. **Access the application**
+   Open your browser and navigate to `http://localhost:8000`
+>>>>>>> readme
 
 ## 📁 Project Structure
 

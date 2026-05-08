@@ -1,0 +1,122 @@
+3f14d28	Muhammad Faizan Khan	Fri May 8 03:21:00 2026	Merge pull request #43 from Alpha-1-Enterprise-SWD/Backend
+7f44d9d	FaizanUoA	Fri May 8 03:17:43 2026	updated settings.py
+5341973	FaizanUoA	Fri May 8 02:54:33 2026	updated settings.py
+66d3bb3	FaizanUoA	Fri May 8 02:52:16 2026	Updated Settings.py for render
+81e8808	Chia-Chen Wu	Fri May 8 02:10:50 2026	Merge pull request #42 from Alpha-1-Enterprise-SWD/Backend
+13b7598	Muhammad Faizan Khan	Fri May 8 02:09:00 2026	Merge branch 'main' into Backend
+2193adf	FaizanUoA	Fri May 8 01:57:44 2026	updated code with solved conflicts
+9d95cfa	FaizanUoA	Fri May 8 01:39:00 2026	Updated requirements.txt file
+08867f1	FaizanUoA	Fri May 8 01:30:57 2026	updated settings
+69c11bb	Muhammad Faizan Khan	Thu May 7 19:39:40 2026	Merge pull request #38 from KanoWuTW/backend_refactoring
+85bc8ea	Chia-Chen Wu	Thu May 7 19:26:16 2026	stop tracking GP_Radar/gp_radar_backup.sql
+16c1764	Chia-Chen Wu	Thu May 7 19:25:47 2026	stop tracking GP_Radar/gp_radar_backup.db
+0a6b5df	Chia-Chen Wu	Thu May 7 19:19:34 2026	fixed several bugs
+5af6636	Chia-Chen Wu	Thu May 7 16:29:08 2026	get actual coordinates
+6d844db	Chia-Chen Wu	Thu May 7 16:23:43 2026	1. Fixed healthboard filtering bug 2. Removed print functions
+5be5980	Chia-Chen Wu	Wed May 6 23:57:49 2026	Merge remote-tracking branch 'origin/main' into backend_refactoring
+3d84de7	Chia-Chen Wu	Wed May 6 23:39:26 2026	added code explanations
+759e4e0	Chia-Chen Wu	Wed May 6 23:32:41 2026	added more code explanations
+ed98c41	Chia-Chen Wu	Wed May 6 23:30:00 2026	added explanation and error handlings
+114f24a	Chia-Chen Wu	Wed May 6 22:56:09 2026	made the data required to generate pie graph be provided by the backend.
+0702f2a	Chia-Chen Wu	Wed May 6 22:54:53 2026	moved content in _map.html to here for reducing complexity.
+b39e40e	Chia-Chen Wu	Wed May 6 22:54:05 2026	canceled this file for reducing complexity
+91c4642	Raoul Moliere Amisial	Wed May 6 17:52:56 2026	Merge pull request #37 from KanoWuTW/Backend
+5699c28	FaizanUoA	Wed May 6 17:49:38 2026	Updated footer
+c0868f9	FaizanUoA	Wed May 6 17:42:41 2026	Updated Footer
+f56152a	Chia-Chen Wu	Wed May 6 17:11:14 2026	Merge pull request #11 from KanoWuTW/sql-migration
+308a47d	Chia-Chen Wu	Wed May 6 17:04:21 2026	unfinished
+548f17f	Raoul Amisial	Wed May 6 16:54:51 2026	Merge branch 'main' into sql-migration
+5e662be	Chia-Chen Wu	Wed May 6 16:47:57 2026	Merge pull request #36 from KanoWuTW/Backend
+7a62702	FaizanUoA	Wed May 6 16:39:13 2026	Merge branch 'Backend' of https://github.com/KanoWuTW/CS551Q-Alpha_Assessment2 into Backend
+4dda0e2	FaizanUoA	Wed May 6 16:37:41 2026	Updated the filters options to get more accurate ressult. Added the pagination option on filtered data Change to logic to handle everything at the backend django
+2bbd072	Chia-Chen Wu	Wed May 6 15:47:12 2026	unfinished
+10fefee	Raoul Amisial	Wed May 6 13:59:09 2026	Merge branch 'main' into sql-migration
+9f4217b	Chia-Chen Wu	Wed May 6 13:48:17 2026	removed not used code
+aa80c61	Chia-Chen Wu	Wed May 6 13:47:36 2026	Merge pull request #34 from KanoWuTW/Backend
+4bc3200	Chia-Chen Wu	Wed May 6 13:46:02 2026	Merge branch 'main' into Backend
+7c167c7	Chia-Chen Wu	Wed May 6 12:50:45 2026	refactored js code so the popup can be rendered at the backend
+5ce1d68	Chia-Chen Wu	Wed May 6 12:49:54 2026	added loading of map popup function
+8364f95	Chia-Chen Wu	Wed May 6 12:48:12 2026	removed not used import
+3fbea3c	Chia-Chen Wu	Wed May 6 12:47:48 2026	fixed template extension bug
+c2a81f8	Raoul Amisial	Wed May 6 00:49:26 2026	Fixing gps coordinates import
+9159b15	Chia-Chen Wu	Tue May 5 23:30:31 2026	refactored the dashboard template so it extends the  map with _map.html
+9971598	Raoul Amisial	Tue May 5 22:58:07 2026	Merge main into sql-migration, resolve conflicts, replace pgeocode with geopy for better geolocation accuracy and updated dependencies requirements file
+6c8e6ae	FaizanUoA	Tue May 5 21:47:27 2026	Updated README.md file with current updated Project Structure
+2e20630	FaizanUoA	Tue May 5 21:44:09 2026	updated footer, with some more details like: Quick Details Project Details Document links Also social media icons
+e0737cc	FaizanUoA	Tue May 5 20:48:56 2026	updated urls.py file
+b042f03	FaizanUoA	Tue May 5 20:43:23 2026	updated code
+02800ec	Raoul Amisial	Tue May 5 19:47:22 2026	Resolved merge conflicts in settings.py and .gitignore
+069a7ef	Muhammad Faizan Khan	Tue May 5 19:24:41 2026	Merge pull request #31 from KanoWuTW/frontend_final
+37fb0c9	Raoul Amisial	Tue May 5 17:59:41 2026	Save utils.py before merging main
+70ff303	Raoul Amisial	Tue May 5 17:55:26 2026	Resolved merge conflicts in import_data.py
+1a915f3	Elorm Agbledzorwu	Sat May 2 17:32:56 2026	new
+e76d94c	Muhammad Faizan Khan	Thu Apr 30 17:01:38 2026	Merge pull request #30 from KanoWuTW/fixed_bugs_in_backend-re-structured
+01155f8	Chia-Chen Wu	Thu Apr 30 16:52:31 2026	Fixed designation bugs
+cd52051	Muhammad Faizan Khan	Thu Apr 30 16:27:28 2026	Merge pull request #29 from KanoWuTW/backend-re-structured
+d287249	Chia-Chen Wu	Thu Apr 30 16:08:37 2026	fixed bug
+3f011ff	Chia-Chen Wu	Thu Apr 30 16:00:19 2026	revised the code to fit the new database structure
+e70413a	Chia-Chen Wu	Thu Apr 30 01:47:00 2026	Merge remote-tracking branch 'origin/main' into backend-re-structured
+8efbb8e	Chia-Chen Wu	Thu Apr 30 01:39:21 2026	Merge pull request #26 from KanoWuTW/database-refactoring
+c0f74ac	Chia-Chen Wu	Thu Apr 30 00:58:57 2026	handled empty practice id
+1d75c21	Chia-Chen Wu	Thu Apr 30 00:58:10 2026	fixed css linking bug
+e38d750	Raoul Amisial	Thu Apr 30 00:13:11 2026	Refactor GP data model and GP details - Add GPPractitioners in data\ and the model - Refactor GBDetails as link table between GPPractitioners and GPPractices - Update import_data.py to load the new and modified tables - Add HB_LOOKUP to convert the Health Board to their corresponding agency name - Modified GPDetails.csv in the data folder
+11a03c2	Chia-Chen Wu	Wed Apr 29 23:47:31 2026	added practice detail link
+64c1c28	Chia-Chen Wu	Wed Apr 29 23:47:19 2026	made root route be redirected to /tables/practices
+b6d0b74	Chia-Chen Wu	Wed Apr 29 23:46:18 2026	removed unwanted file
+a7ca0da	Chia-Chen Wu	Wed Apr 29 23:33:01 2026	added gp detail link
+296d802	Chia-Chen Wu	Wed Apr 29 23:32:43 2026	changed route name
+ec77058	Chia-Chen Wu	Wed Apr 29 23:31:54 2026	completed age group data returning
+91a22c9	Chia-Chen Wu	Wed Apr 29 23:31:08 2026	fixed path bug
+3ea9110	Chia-Chen Wu	Wed Apr 29 21:48:31 2026	fixed bugs
+5f0a562	Chia-Chen Wu	Wed Apr 29 21:48:16 2026	fixed naming
+ce14fc9	Chia-Chen Wu	Wed Apr 29 21:48:03 2026	created contextual data that the frontend needs
+1e12fc9	Chia-Chen Wu	Wed Apr 29 20:09:11 2026	Merge branch 'fix-template-static-location' into feature_map
+e18b2b5	Chia-Chen Wu	Wed Apr 29 20:05:04 2026	added new route
+4554c3c	Chia-Chen Wu	Wed Apr 29 19:57:33 2026	adjusted the location of templates and static files
+4680aba	Chia-Chen Wu	Wed Apr 29 19:33:41 2026	..
+b0e7e07	Chia-Chen Wu	Wed Apr 29 17:53:04 2026	unified a url parameter name
+83f1081	Chia-Chen Wu	Wed Apr 29 17:52:33 2026	added more explanation for code
+4668ce8	Chia-Chen Wu	Wed Apr 29 15:45:09 2026	small typography change
+c7b0c94	Chia-Chen Wu	Wed Apr 29 14:38:07 2026	fixed devide by zero bug
+81b43a2	Chia-Chen Wu	Wed Apr 29 14:37:47 2026	fixed pagination links
+cc3b41f	Chia-Chen Wu	Tue Apr 28 23:35:24 2026	fixed buggs
+8216876	Chia-Chen Wu	Tue Apr 28 23:11:00 2026	activated humaniser
+147d634	Chia-Chen Wu	Tue Apr 28 20:54:38 2026	revised templates
+ca50d27	Chia-Chen Wu	Tue Apr 28 20:54:09 2026	fixed bug and changed a variable name
+bd4ab38	Chia-Chen Wu	Tue Apr 28 19:28:03 2026	revised variables
+d24afb5	Chia-Chen Wu	Tue Apr 28 19:27:50 2026	calculate total practice number
+bb7730f	Chia-Chen Wu	Tue Apr 28 19:12:30 2026	moved dashboard.html to the right folder
+186bbcc	Chia-Chen Wu	Tue Apr 28 19:12:06 2026	revised view.py cope with templates
+7608b53	Chia-Chen Wu	Tue Apr 28 12:33:20 2026	added templates and static files
+b09f7ea	Chia-Chen Wu	Tue Apr 28 12:07:05 2026	Updated ignore list: db.sqlite3
+be419ca	Chia-Chen Wu	Tue Apr 28 11:53:23 2026	updated ignore list: db.sqlite3
+1e00b8c	Raoul Amisial	Tue Apr 28 01:43:02 2026	Remove local database file and clean up environment
+546a491	Raoul Amisial	Tue Apr 28 01:41:27 2026	Update .gitignore files
+814af7e	Raoul Amisial	Tue Apr 28 01:40:43 2026	Update settings file to connect to MySQL database
+8d26266	Raoul Amisial	Tue Apr 28 01:39:13 2026	Import commands to load database
+5df7b4c	Raoul Amisial	Tue Apr 28 01:38:36 2026	HB lookup function and Postcode conversion utilities
+ef66412	Raoul Amisial	Tue Apr 28 01:35:51 2026	Database backup MySQL
+4e98b81	Raoul Amisial	Tue Apr 28 01:35:26 2026	Database backup SQLite
+c7b3f6c	FaizanUoA	Mon Apr 27 15:21:02 2026	Template folder with initial working on table, chart and map. Also static folder with working .js and css files
+8cc938f	Chia-Chen Wu	Mon Apr 27 13:36:18 2026	Developed core functionality for sending data requested by urls in the pattern of "/tables/tablename?page={}&filter={}&filter={}"
+c7a23ee	Chia-Chen Wu	Fri Apr 24 21:49:25 2026	created new app: table
+136e04f	Chia-Chen Wu	Fri Apr 24 21:47:19 2026	left the development of map and core for table.
+ba0facc	FaizanUoA	Fri Apr 24 11:49:24 2026	Updated README.md file
+44edbc0	FaizanUoA	Fri Apr 24 11:38:40 2026	Merge branch 'Backend' of https://github.com/KanoWuTW/CS551Q-Alpha_Assessment2 into Backend
+32bf414	FaizanUoA	Fri Apr 24 11:32:24 2026	Updated README.md file with import_data command to the database
+591dd31	FaizanUoA	Fri Apr 24 11:26:56 2026	Updated README.md file with import_data command to the database
+a7ccec3	FaizanUoA	Fri Apr 24 11:22:33 2026	Updated README.md file with import_data command to the database
+f90b1be	Chia-Chen Wu	Fri Apr 24 10:45:33 2026	Started a new app and left core for now
+c912223	Raoul Amisial	Fri Apr 24 10:25:38 2026	Creation of a data dump from sqlite, updated requirements dependencies file and updated settings file to connect to mysql server
+4d0679c	Chia-Chen Wu	Fri Apr 24 10:18:09 2026	Altered the GP_Radar/GP_Radar/urls.py but nothing significant. Also started a new app "core".
+441c9d2	Chia-Chen Wu	Fri Apr 24 10:09:59 2026	Merge pull request #10 from KanoWuTW/Backend
+bd56cbd	Chia-Chen Wu	Fri Apr 24 10:09:02 2026	Delete GP_Radar/credentials.env
+742b274	FaizanUoA	Thu Apr 23 22:45:04 2026	credential.env file to store all the private data
+780986e	FaizanUoA	Thu Apr 23 22:41:18 2026	Imported all data from all the .csv files into database. Command to load it is 'python manage.py import_data --data-path data --clear'
+a06d9b9	Chia-Chen Wu	Wed Apr 22 11:52:31 2026	Merge pull request #9 from KanoWuTW/Backend
+3615238	FaizanUoA	Wed Apr 22 11:38:07 2026	Updated README.md file with updated frontend structure
+df34a57	FaizanUoA	Wed Apr 22 11:31:24 2026	Updated README.md file with proper alignment and structure
+f8dcf81	FaizanUoA	Wed Apr 22 11:15:38 2026	Add README with project overview and team structure
+4e7bd65	Elorm Agbledzorwu	Tue Apr 21 18:42:47 2026	Merge pull request #1 from KanoWuTW/PRtest
+74c8bbd	Chia-Chen Wu	Tue Apr 21 18:26:53 2026	a test
+4957bf7	Chia-Chen Wu	Tue Apr 21 18:12:44 2026	first commit. copied all files from the first repo

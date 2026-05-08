@@ -142,8 +142,11 @@ function loadHealthBoardChart() {
     const ctx = document.getElementById('healthBoardChart');
     if (!ctx) return;
 
-    // Get health board data from the page
-    const healthBoardData = getHealthBoardData();
+    // The chart data is rendered by the Django template into a hidden JSON script tag.
+    const dataElement = document.getElementById("health-board-data");
+    if (!dataElement) return;
+
+    const healthBoardData = JSON.parse(dataElement.textContent);
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -307,29 +310,6 @@ function loadSizeChart() {
     });
 }
 
-// Get health board data from the current page
-function getHealthBoardData() {
-    const healthBoards = {};
-    const rows = document.querySelectorAll('#tableView tbody tr');
-
-    rows.forEach(row => {
-        const badge = row.querySelector('.badge');
-        if (badge) {
-            const boardName = badge.textContent.trim();
-            healthBoards[boardName] = (healthBoards[boardName] || 0) + 1;
-        }
-    });
-
-    // Limit to top 8 boards for better visualization
-    const sortedBoards = Object.entries(healthBoards)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8);
-
-    return {
-        labels: sortedBoards.map(([name]) => name),
-        data: sortedBoards.map(([, count]) => count)
-    };
-}
 
 // Get patient to GP ratio data
 function getRatioData() {
@@ -337,6 +317,7 @@ function getRatioData() {
     const ratios = [];
 
     rows.forEach((row, index) => {
+        // Column index 5 is the Patient/GP Ratio column in the table layout.
         const ratioCell = row.cells[5]; // Patient/GP Ratio column
         if (ratioCell) {
             const ratioText = ratioCell.textContent.trim();
@@ -366,6 +347,7 @@ function getSizeData() {
     const sizes = [];
 
     rows.forEach(row => {
+        // Column index 3 is the Total Patients column in the table layout.
         const sizeCell = row.cells[3]; // Total Patients column
         if (sizeCell) {
             const sizeText = sizeCell.querySelector('strong').textContent.trim();
@@ -424,45 +406,15 @@ function addPracticeMarkers() {
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
 
-    // Get practice data from the table
-    const rows = document.querySelectorAll('#tableView tbody tr');
+    // Marker data is passed from Django as JSON in the page template.
+    const dataElement = document.getElementById("map-practices-data");
+    if (!dataElement) return;
 
-    rows.forEach((row, index) => {
-        const practiceName = row.querySelector('strong').textContent;
-        const address = row.querySelector('.text-muted').textContent;
-        const patientCount = row.cells[2].textContent.trim();
-        const gpCount = row.cells[3].textContent.trim();
-        const ratio = row.cells[4].textContent.trim();
+    const practices = JSON.parse(dataElement.textContent);
 
-        // Create popup content
-        const popupContent = `
-            <div style="min-width: 200px;">
-                <h6>${practiceName}</h6>
-                <p class="mb-1"><small>${address}</small></p>
-                <div class="row text-center">
-                    <div class="col-4">
-                        <strong>${patientCount}</strong><br>
-                        <small>Patients</small>
-                    </div>
-                    <div class="col-4">
-                        <strong>${gpCount}</strong><br>
-                        <small>GPs</small>
-                    </div>
-                    <div class="col-4">
-                        <strong>${ratio}</strong><br>
-                        <small>Ratio</small>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Create marker (using approximate coordinates for demonstration)
-        // In a real implementation, you'd use actual latitude/longitude from the database
-        const lat = 56.4907 + (Math.random() - 0.5) * 2;
-        const lng = -4.2026 + (Math.random() - 0.5) * 4;
-
-        const marker = L.marker([lat, lng])
-            .bindPopup(popupContent)
+    practices.forEach(practice => {
+        const marker = L.marker([practice.latitude, practice.longitude])
+            .bindPopup(practice.popup_html)
             .addTo(map);
 
         markers.push(marker);
@@ -497,6 +449,7 @@ function exportData() {
     // Get current filter parameters
     const urlParams = new URLSearchParams(window.location.search);
 
+    // This URL is a placeholder here; the actual export endpoint should be passed from the template.
     // Create export URL (this would be implemented as a Django view)
     const exportUrl = `{% url 'export_data' %}?${urlParams.toString()}`;
 

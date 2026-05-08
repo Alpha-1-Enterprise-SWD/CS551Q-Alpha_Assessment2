@@ -1,4 +1,4 @@
-# GP Radar: Patient-to-GP Ratio Analysis System
+# GP Radar: HealthCare Intelligence Platform
 
 ![Django](https://img.shields.io/badge/Django-4.2+-green.svg)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
@@ -21,7 +21,6 @@ GP Radar is a comprehensive Django web application designed to provide actionabl
 - **Backend**: Django 4.2+ with Python 3.8+
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Database**: PostgreSQL (development: SQLite)
-- **Data Processing**: Pandas for data analysis and manipulation
 - **Visualization**: Chart.js for interactive charts
 
 ## 👥 Development Team
@@ -30,8 +29,8 @@ GP Radar is a comprehensive Django web application designed to provide actionabl
 |------|--------------|
 | **Team Leaders** | Raoul, Faizan Khan |
 | **Data Lead** | Raoul, David |
-| **Frontend Lead** | Thomas |
-| **Backend Lead** | Chia Chen, Enoch, Faizan Khan |
+| **Frontend Lead** | Thomas, Enoch |
+| **Backend Lead** | Chia Chen, Faizan Khan |
 | **Quality Lead** | Faizan Khan |
 
 ## 📊 Data Sources
@@ -56,7 +55,7 @@ This application utilizes official healthcare data from Public Health Scotland:
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - pip (Python package manager)
 - Virtual environment (recommended)
 
@@ -98,7 +97,7 @@ This application utilizes official healthcare data from Public Health Scotland:
    ```
 
 7. **Access the application**
-   Open your browser and navigate to `http://localhost:8000`
+   Open your browser and navigate to `https://gp-radar.onrender.com/api/practices`
 
 ## 📁 Project Structure
 
@@ -180,14 +179,6 @@ GP_Radar/
 3. **Ratio Analysis**: Compare patient-to-GP ratios across regions
 4. **Reports**: Generate and export detailed reports
 5. **Data Management**: Update and maintain dataset integrity
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 
 
